@@ -1,5 +1,5 @@
-<nav class="bg-pink-100 py-3 shadow-sm">
-    <div class="container flex justify-between items-center">
+<nav class=" bg-pink-100 py-3 shadow-sm">
+    <div class="container mx-auto flex justify-between items-center">
         <a href="/" class="font-bold text-lg text-pink-700">
             <img src="{{ asset('img/logo/logo.png') }}" alt="Logo" class="h-8 inline">
         </a>

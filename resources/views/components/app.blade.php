@@ -7,13 +7,13 @@
     <title>{{ $title ?? 'Floral App' }}</title>
     @vite('resources/css/app.css')
 </head>
-<body class="d-flex flex-column min-vh-100">
+<body class="d-flex flex-column  bg-indigo-100 min-vh-100">
 
     {{-- Slot Navbar --}}
     {{ $navbar ?? '' }}
 
     {{-- Main content --}}
-    <main class="container py-4 flex-grow-1">
+    <main class="container mx-auto py-4 flex-grow-1">
         {{ $slot }}
     </main>
 

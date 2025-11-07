@@ -1,4 +1,4 @@
-<section class="text-center mt-8">
+<section class="max-w-7xl mx-auto  text-center mt-8">
     <h1 class="text-3xl font-semibold text-pink-700">
         <img src="{{ asset('img/logo/logo.png') }}" alt="Logo" class="mx-auto h-16 mb-4">
     </h1>
