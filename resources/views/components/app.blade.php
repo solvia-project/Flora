@@ -9,14 +9,15 @@
 </head>
 <body class="d-flex flex-column min-vh-100">
 
+    {{-- Slot Navbar --}}
     {{ $navbar ?? '' }}
 
-
+    {{-- Main content --}}
     <main class="container py-4 flex-grow-1">
         {{ $slot }}
     </main>
 
-
+    {{-- Slot Footer --}}
     {{ $footer ?? '' }}
 
 </body>
