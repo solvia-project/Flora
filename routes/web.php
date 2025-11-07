@@ -3,6 +3,10 @@
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('pages.home');
+    return view('content.home');
+});
+
+Route::get('/register', function () {
+    return view('content.register');
 });
 

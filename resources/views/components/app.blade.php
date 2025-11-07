@@ -18,7 +18,7 @@
     </main>
 
     {{-- Slot Footer --}}
-    {{ $footer ?? '' }}
+    {{-- {{ $footer ?? '' }} --}}
 
 </body>
 </html>

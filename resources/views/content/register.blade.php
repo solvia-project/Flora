@@ -3,10 +3,8 @@
         <x-navbar />
     </x-slot>
 
-    {{--  --}}
+    {{-- register --}}
     <section class="max-w-7xl mx-auto  text-center mt-8">
-        <h5 class="text-gray-600 mt-3">
-            Your Floral Journey Begins Here
-        </h5>
+<h1>register</h1>
     </section>
 </x-app>
