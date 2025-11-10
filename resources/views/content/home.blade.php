@@ -11,7 +11,7 @@
                 Your Floral Journey Begins Here
             </h5>
 
-            <h1 class="font-['Syne'] text-3xl sm:text-4xl md:text-5xl lg:text-6xl mt-4">
+            <h1 class="font-['Syne'] text-3xl sm:text-4xl md:text-5xl lg:text-6xl mt-4 px-40">
                 Discover the joy of flower arranging — no experience needed, just your passion!
             </h1>
 
