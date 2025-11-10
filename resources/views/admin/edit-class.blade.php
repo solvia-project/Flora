@@ -51,48 +51,48 @@
                       <div class="row">
                         <div class="col-md-3">
                           <div class="mb-3">
-                            <label class="form-label">Company</label>
-                            <input class="form-control" type="text" placeholder="Company">
+                            <label class="form-label">Class Name</label>
+                            <input class="form-control" type="text" placeholder="Class">
                           </div>
                         </div>
                         <div class="col-sm-6 col-md-3">
                           <div class="mb-3">
-                            <label class="form-label">Username</label>
-                            <input class="form-control" type="text" placeholder="Username">
+                            <label class="form-label">Price (Rupiah)</label>
+                            <input class="form-control" type="text" placeholder="Rupiah">
                           </div>
                         </div>
                         <div class="col-sm-6 col-md-3">
                           <div class="mb-3">
-                            <label class="form-label">Email address</label>
-                            <input class="form-control" type="email" placeholder="Email">
+                            <label class="form-label">Location</label>
+                            <input class="form-control" type="email" placeholder="Location">
                           </div>
                         </div>
                         <div class="col-sm-6 col-md-3">
                           <div class="mb-3">
-                            <label class="form-label">First Name</label>
-                            <input class="form-control" type="text" placeholder="Company">
+                            <label class="form-label">Date & Time</label>
+                            <input class="form-control" type="text" placeholder="Date & Time">
                           </div>
                         </div>
                         <div class="col-sm-6 col-md-3">
                           <div class="mb-3">
-                            <label class="form-label">Last Name</label>
+                            <label class="form-label">Duration (Hours)</label>
                             <input class="form-control" type="text" placeholder="Last Name">
                           </div>
                         <div class="mb-3">
-                            <label class="form-label">Postal Code</label>
-                            <input class="form-control" type="number" placeholder="ZIP Code">
+                            <label class="form-label">Image Product</label>
+                            <input class="form-control" type="number" placeholder="Drag & Drop File / Browse">
                           </div>
                         </div>
                         <div class="col-md-9">
                           <div>
-                            <label class="form-label">About Me</label>
+                            <label class="form-label">Description</label>
                             <textarea class="form-control" rows="5" placeholder="Enter About your description"></textarea>
                           </div>
                         </div>
                       </div>
                     </div>
                     <div class="card-footer text-end">
-                      <button class="bg-pink-300 px-4 py-2 rounded-xl" type="submit">Save</button>
+                      <button class="bg-pink-300 px-4 py-2 rounded-2xl" type="submit">Save</button>
                     </div>
                   </form>
                 </div>
