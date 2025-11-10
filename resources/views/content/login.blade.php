@@ -9,7 +9,7 @@
         <div class="hidden md:flex w-3/4"></div>
 
         {{-- Kotak register kanan --}}
-        <div class="w-full md:w-1/2 flex flex-col bg-white bg-opacity-90 p-8 md:p-12 justify-center items-end md:mr-40">
+        <div class="w-3/4 md:w-1/2 flex flex-col bg-white bg-opacity-90 px-8 md:p-12 justify-center items-end md:mr-40">
 
             <div class="flex flex-col md:w-3/4 text-left">
                 <h5 class="text-gray-600 font-['Syne'] text-xl sm:text-2xl md:text-3xl">
@@ -31,7 +31,7 @@
 
                 {{-- Tombol Register --}}
                 <div class="w-full mt-8 text-center ">
-                    <button class="bg-[#F8CDCD] text-black py-2 px-6 rounded text-sm sm:text-base hover:shadow-lg transition" onclick="window.location.href='/about'">
+                    <button class="w-full bg-[#F8CDCD] text-black py-2 px-6 rounded text-sm sm:text-base hover:shadow-lg transition" onclick="window.location.href='/about'">
                         Login
                     </button>
                     <p class="mt-4"> <a href="/login" class="hover:underline">Forgot Password?</a></p>
