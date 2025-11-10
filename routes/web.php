@@ -25,3 +25,11 @@ Route::get('/classes', function () {
 Route::get('/booking', function () {
     return view('content.booking');
 });
+
+Route::get('/admin/booking', function () {
+    return view('admin.booking');
+});
+
+Route::get('/admin/user', function () {
+    return view('admin.user');
+});
