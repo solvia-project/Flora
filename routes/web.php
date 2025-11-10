@@ -21,3 +21,7 @@ Route::get('/about', function () {
 Route::get('/classes', function () {
     return view('content.class');
 });
+
+Route::get('/booking', function () {
+    return view('content.booking');
+});
