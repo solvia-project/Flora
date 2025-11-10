@@ -18,8 +18,7 @@
                     const userClass = $refs.userClass.value;
 
                     if (!name || !email || !password || !userClass || userClass === 'Select Class') {
-                        alert('Please fill all required fields!');
-                        return false;
+                        return true;
                     }
                     return true;
                 }
@@ -27,7 +26,7 @@
             class="w-full max-w-4xl bg-white rounded-lg shadow-lg p-8 md:p-12">
 
             {{-- Title --}}
-            <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 text-center">
+            <h1 class="text-2xl sm:text-3xl md:text-4xl font-['syne'] font-bold text-gray-800 text-center">
                 Flower Arrangement Form
             </h1>
             <p class="mt-2 text-center text-gray-600">
@@ -36,16 +35,16 @@
 
             {{-- Form --}}
             <form class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4" @submit.prevent>
-                <input type="text" placeholder="Your Name" x-ref="userName" required
+                <input type="text" placeholder="Your Name" x-ref="userName"
                        class="w-full border border-gray-300 py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300">
 
-                <input type="email" placeholder="Your Email" x-ref="userEmail" required
+                <input type="email" placeholder="Your Email" x-ref="userEmail"
                        class="w-full border border-gray-300 py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300">
 
-                <input type="password" placeholder="Your Password" x-ref="userPassword" required
+                <input type="password" placeholder="Your Password" x-ref="userPassword"
                        class="w-full border border-gray-300 py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300">
 
-                <select x-ref="userClass" required class="w-full border border-gray-300 py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300">
+                <select x-ref="userClass"  class="w-full border border-gray-300 py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300">
                     <option>Select Class</option>
                     <option>Beginner</option>
                     <option>Intermediate</option>
@@ -62,7 +61,7 @@
             <div class="mt-6 text-end">
                 <button type="button"
                         @click="if(validateForm()) { open = true; showSuccess = false; modalStep='payment'; }"
-                        class="bg-pink-600 text-white py-2 px-6 rounded-lg hover:bg-pink-700 transition">
+                        class="bg-pink-300 text-black py-2 px-6 rounded-lg hover:bg-pink-700 transition">
                     Book Now
                 </button>
             </div>
@@ -72,30 +71,30 @@
                  class="fixed inset-0 flex items-center justify-center z-50 bg-black/20 backdrop-blur-sm">
 
                 <div class="bg-white rounded-lg w-full max-w-md p-6 relative shadow-lg">
-
+                    <p>&leftarrow; Purchase Arrangement</p>
                     {{-- Close Modal --}}
                     <button @click="open = false; modalStep='payment'; showSuccess = false"
                             class="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
 
                     {{-- Step: Payment --}}
                     <div x-show="modalStep === 'payment'" x-transition>
-                        <h2 class="text-xl font-bold mb-4">Payment Summary</h2>
+                        <h2 class="text-xl font-bold font-['syne'] mb-4">Beginner Floral Arrangement</h2>
 
                         <div class="grid grid-cols-2 grid-rows-2 gap-4 mb-4">
                             <template x-for="i in 4" :key="i">
                                 <div class="flex gap-2 items-center">
                                     <div class="bg-indigo-300 w-20 h-20"></div>
                                     <div>
-                                        <p>Name</p>
+                                        <p>Contact</p>
                                         <p x-text="$refs.userName.value || 'Ucok'"></p>
                                     </div>
                                 </div>
                             </template>
                         </div>
 
-                        <hr class="my-5">
+                        <hr class="my-5 text-gray-400/50">
 
-                        <div class="mb-4">
+                        <div class="bg-gray-100 mb-4">
                             <h1 class="font-bold">Summary</h1>
                             <hr class="my-2">
                             <div class="flex justify-between">
