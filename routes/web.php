@@ -33,3 +33,7 @@ Route::get('/admin/booking', function () {
 Route::get('/admin/user', function () {
     return view('admin.user');
 });
+
+Route::get('/admin/class', function () {
+    return view('admin.class');
+});
