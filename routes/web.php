@@ -37,3 +37,7 @@ Route::get('/admin/user', function () {
 Route::get('/admin/class', function () {
     return view('admin.class');
 });
+
+Route::get('/admin/editclass', function () {
+    return view('admin.edit-class');
+});
