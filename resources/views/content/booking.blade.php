@@ -57,6 +57,9 @@
                        class="w-full border border-gray-300 py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300">
             </form>
 
+
+
+
             {{-- Book Now Button --}}
             <div class="mt-6 text-end">
                 <button type="button"
@@ -70,39 +73,61 @@
             <div x-show="open" x-cloak
                  class="fixed inset-0 flex items-center justify-center z-50 bg-black/20 backdrop-blur-sm">
 
-                <div class="bg-white rounded-lg w-full max-w-md p-6 relative shadow-lg">
-                    <p>&leftarrow; Purchase Arrangement</p>
+                <div class="bg-white rounded-lg w-full max-w-3xl p-6 relative shadow-lg">
+                    <p class="my-5">&leftarrow; Purchase Arrangement</p>
                     {{-- Close Modal --}}
                     <button @click="open = false; modalStep='payment'; showSuccess = false"
                             class="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
 
                     {{-- Step: Payment --}}
-                    <div x-show="modalStep === 'payment'" x-transition>
+                    <div x-show="modalStep === 'payment'" x-transition class="p-5">
                         <h2 class="text-xl font-bold font-['syne'] mb-4">Beginner Floral Arrangement</h2>
 
                         <div class="grid grid-cols-2 grid-rows-2 gap-4 mb-4">
-                            <template x-for="i in 4" :key="i">
-                                <div class="flex gap-2 items-center">
+                                <div class="flex gap-2 ">
+                                    <div class="bg-indigo-300 w-20 h-20"></div>
+                                    <div>
+                                        <p>Name</p>
+                                        <p>Ucok</p>
+                                    </div>
+                                </div>
+                                <div class="flex gap-2 ">
                                     <div class="bg-indigo-300 w-20 h-20"></div>
                                     <div>
                                         <p>Contact</p>
-                                        <p x-text="$refs.userName.value || 'Ucok'"></p>
+                                        <p>ucok@mail.com</p>
+                                        <p>08567878667</p>
                                     </div>
                                 </div>
-                            </template>
+                                <div class="flex gap-2 ">
+                                    <div class="bg-indigo-300 w-20 h-20"></div>
+                                    <div>
+                                        <p>Date and Time</p>
+                                        <p>Wednesday, 20 August 2026</p>
+                                        <p>11.00 am</p>
+                                    </div>
+                                </div>
+                                <div class="flex gap-2 ">
+                                    <div class="bg-indigo-300 w-20 h-20"></div>
+                                    <div>
+                                        <p>Place</p>
+                                        <p>Citraland, Surabaya</p>
+                                        <p>Indonesia</p>
+                                    </div>
+                                </div>
                         </div>
 
-                        <hr class="my-5 text-gray-400/50">
+                        <hr class="my-10 text-gray-400/50">
 
-                        <div class="bg-gray-100 mb-4">
-                            <h1 class="font-bold">Summary</h1>
-                            <hr class="my-2">
-                            <div class="flex justify-between">
+                        <div class="bg-indigo-50 px-5 py-10 rounded-lg">
+                            <h1 class="font-bold my-5">Summary</h1>
+                            <hr class="my-2 text-gray-400/50">
+                            <div class="flex justify-between my-5">
                                 <p>Total</p>
                                 <p>Rp.120000</p>
                             </div>
-                            <hr class="my-2">
-                            <p class="mb-2">Payment Method</p>
+                            <hr class="my-2 text-gray-400/50">
+                            <p class=" my-5">Payment Method</p>
 
                             {{-- Payment Dropdown --}}
                             <select x-model="paymentMethod"
@@ -116,20 +141,20 @@
                             </select>
 
                             {{-- Successful Payment Message --}}
-                            <div x-show="showSuccess" class="mb-4 p-2 bg-green-100 text-green-800 rounded text-center">
+                            <div x-show="showSuccess" class="mb-4 p-2 bg-green-50 border border-green-200 text-black font-semibold rounded text-center">
                                 Successful Payment!
                             </div>
 
                             {{-- Pay Now Button --}}
                             <button x-show="!showSuccess"
                                     @click.prevent="if(paymentMethod){ showSuccess = true; } else { alert('Please select a payment method!'); }"
-                                    class="w-full bg-pink-600 text-white py-2 px-6 rounded-lg hover:bg-pink-700 transition">
+                                    class="w-full bg-pink-200 text-black py-2 px-6 rounded-lg hover:bg-pink-300 transition">
                                 Pay Now
                             </button>
 
                             {{-- See Invoice Button --}}
                             <button x-show="showSuccess" @click.prevent="modalStep='invoice'"
-                                    class="w-full mt-2 bg-pink-600 text-white py-2 px-6 rounded-lg hover:bg-pink-700 transition">
+                                    class="w-full mt-2 bg-pink-200 text-black py-2 px-6 rounded-lg hover:bg-pink-300 transition">
                                 See Invoice
                             </button>
                         </div>
@@ -137,20 +162,62 @@
 
                     {{-- Step: Invoice --}}
                     <div x-show="modalStep === 'invoice'" x-transition>
-                        <h2 class="text-xl font-bold mb-4 text-center">Invoice Receipt</h2>
-                        <div class="bg-gray-100 p-4 rounded mb-4 space-y-2">
-                            <p><strong>Name:</strong> <span x-text="$refs.userName.value || 'Ucok'"></span></p>
-                            <p><strong>Email:</strong> <span x-text="$refs.userEmail.value || 'example@mail.com'"></span></p>
-                            <p><strong>Class:</strong> <span x-text="$refs.userClass.value || 'Beginner'"></span></p>
-                            <p><strong>Date & Time:</strong> <span x-text="$refs.userDate.value || '10 Nov 2025'"></span>,
-                                <span x-text="$refs.userTime.value || '09:00'"></span></p>
-                            <p><strong>Payment Method:</strong> <span x-text="paymentMethod || 'Mastercard'"></span></p>
-                            <p><strong>Total:</strong> Rp.120000</p>
+                        <div class="w-full flex text-center items-center justify-center">
+                            <img src="{{ asset('img/logo/logo.png') }}" alt="" class="w-40">
                         </div>
-                        <button @click="open = false; modalStep='payment'; showSuccess=false"
-                                class="w-full bg-pink-600 text-white py-2 px-6 rounded-lg hover:bg-pink-700 transition">
-                            Close
-                        </button>
+                        <div class="w-full  rounded space-y-2">
+                            <div class="bg-gray-100 p-4 mb-4 ">
+                                <div class="flex justify-between">
+                                    <p><strong>Invoice</strong></p>
+                                    <div>
+                                    <p>Invoice No.</p>
+                                    <p><strong>202501</strong></p>
+                                    </div>
+                                </div>
+                                <div class="flex justify-between">
+                                    <div class="flex flex-col">
+                                        <p>Billed To:</p>
+                                        <p><strong>Client Name</strong></p>
+                                    </div>
+                                    <div>
+                                    <p>Issued on</p>
+                                    <p><strong>August 5, 2077</strong></p>
+                                    </div>
+                                </div>
+                                <div class="flex justify-between">
+                                    <div class="flex flex-col">
+                                        <p>Contact</p>
+                                        <p><strong>081382498127</strong></p>
+                                    </div>
+                                    <div>
+                                    <p>Payment Due</p>
+                                    <p><strong>August 12, 2077</strong></p>
+                                    </div>
+                                </div>
+                            </div>
+                                <div class="flex justify-between">
+                                        <p><strong>Description</strong></p>
+                                    <div>
+                                        <p>Total</p>
+                                    </div>
+                                </div>
+                                <div class="flex justify-between">
+                                        <p><strong>Beginner Floral<br>Arrangement</strong></p>
+                                    <div>
+                                        <p>4,000.00</p>
+                                    </div>
+                                </div>
+                                <div class="flex justify-end bg-indigo-50 p-4 gap-4">
+                                    <div>
+                                        <p><strong>Subtotal</strong></p>
+                                        <p><strong>Total (USD)</strong></p>
+                                    </div>
+                                    <div>
+                                        <p>4,000.00</p>
+                                        <p><strong>4,000.00</strong></p>
+                                    </div>
+                                </div>
+                        </div>
                     </div>
                 </div>
             </div>
