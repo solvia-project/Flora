@@ -6,21 +6,26 @@
     <section class="min-h-screen flex items-center justify-center bg-center bg-cover px-4 sm:px-6 lg:px-8"
              style="background-image: url('{{ asset('img/bg/class.png') }}');">
 
-        <div x-data="{
+        <div
+            x-data="{
                 open: false,
                 showSuccess: false,
                 modalStep: 'payment',
                 paymentMethod: '',
+                selectedMethod: null,
+                methods: [
+                    { name: 'Mastercard', img: '{{ asset('img/assets/master.png') }}' },
+                    { name: 'Visa', img: '{{ asset('img/assets/visa.png') }}' },
+                    { name: 'QRIS', img: '{{ asset('img/assets/qris.png') }}' },
+                    { name: 'GoPay', img: '{{ asset('img/assets/gopay.png') }}' },
+                    { name: 'Shopeepay', img: '{{ asset('img/assets/spay.png') }}' }
+                ],
                 validateForm() {
                     const name = $refs.userName.value.trim();
                     const email = $refs.userEmail.value.trim();
                     const password = $refs.userPassword.value.trim();
                     const userClass = $refs.userClass.value;
-
-                    if (!name || !email || !password || !userClass || userClass === 'Select Class') {
-                        return true;
-                    }
-                    return true;
+                    return name && email && password && userClass && userClass !== 'Select Class';
                 }
             }"
             class="w-full max-w-4xl bg-white rounded-lg shadow-lg p-8 md:p-12">
@@ -37,33 +42,27 @@
             <form class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4" @submit.prevent>
                 <input type="text" placeholder="Your Name" x-ref="userName"
                        class="w-full border border-gray-300 py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300">
-
                 <input type="email" placeholder="Your Email" x-ref="userEmail"
                        class="w-full border border-gray-300 py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300">
-
                 <input type="password" placeholder="Your Password" x-ref="userPassword"
                        class="w-full border border-gray-300 py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300">
-
-                <select x-ref="userClass"  class="w-full border border-gray-300 py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300">
+                <select x-ref="userClass"
+                        class="w-full border border-gray-300 py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300">
                     <option>Select Class</option>
                     <option>Beginner</option>
                     <option>Intermediate</option>
                     <option>Advanced</option>
                 </select>
-
-                <input type="date" x-ref="userDate" class="w-full border border-gray-300 py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300">
-
+                <input type="date" x-ref="userDate"
+                       class="w-full border border-gray-300 py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300">
                 <input type="time" x-ref="userTime" min="09:00" max="18:00" value="09:00"
                        class="w-full border border-gray-300 py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300">
             </form>
 
-
-
-
             {{-- Book Now Button --}}
             <div class="mt-6 text-end">
                 <button type="button"
-                        @click="if(validateForm()) { open = true; showSuccess = false; modalStep='payment'; }"
+                        @click="if(validateForm()) { open = true; showSuccess = false; modalStep='payment'; } else { alert('Please fill out all fields!'); }"
                         class="bg-pink-300 text-black py-2 px-6 rounded-lg hover:bg-pink-700 transition">
                     Book Now
                 </button>
@@ -74,47 +73,57 @@
                  class="fixed inset-0 flex items-center justify-center z-50 bg-black/20 backdrop-blur-sm">
 
                 <div class="bg-white rounded-lg w-full max-w-3xl p-6 relative shadow-lg">
-                    <p class="my-5">&leftarrow; Purchase Arrangement</p>
-                    {{-- Close Modal --}}
-                    <button @click="open = false; modalStep='payment'; showSuccess = false"
+                    <p class="my-5 cursor-pointer" @click="modalStep='payment'; showSuccess=false">&leftarrow; Purchase Arrangement</p>
+
+                    {{-- Close --}}
+                    <button @click="open = false"
                             class="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
 
                     {{-- Step: Payment --}}
                     <div x-show="modalStep === 'payment'" x-transition class="p-5">
                         <h2 class="text-xl font-bold font-['syne'] mb-4">Beginner Floral Arrangement</h2>
 
+                        {{-- Summary Info --}}
                         <div class="grid grid-cols-2 grid-rows-2 gap-4 mb-4">
-                                <div class="flex gap-2 ">
-                                    <div class="bg-indigo-300 w-20 h-20"></div>
-                                    <div>
-                                        <p>Name</p>
-                                        <p>Ucok</p>
-                                    </div>
+                            <div class="flex gap-6">
+                                <div class="bg-indigo-300 w-20 h-20 flex justify-center items-center rounded-xl">
+                                    <img src="{{ asset('img/assets/people-outline.png') }}" class="w-8">
                                 </div>
-                                <div class="flex gap-2 ">
-                                    <div class="bg-indigo-300 w-20 h-20"></div>
-                                    <div>
-                                        <p>Contact</p>
-                                        <p>ucok@mail.com</p>
-                                        <p>08567878667</p>
-                                    </div>
+                                <div>
+                                    <p>Name</p>
+                                    <p>Ucok</p>
                                 </div>
-                                <div class="flex gap-2 ">
-                                    <div class="bg-indigo-300 w-20 h-20"></div>
-                                    <div>
-                                        <p>Date and Time</p>
-                                        <p>Wednesday, 20 August 2026</p>
-                                        <p>11.00 am</p>
-                                    </div>
+                            </div>
+                            <div class="flex gap-6">
+                                <div class="bg-indigo-300 w-20 h-20 flex justify-center items-center rounded-xl">
+                                    <img src="{{ asset('img/assets/Mail.png') }}" class="w-8">
                                 </div>
-                                <div class="flex gap-2 ">
-                                    <div class="bg-indigo-300 w-20 h-20"></div>
-                                    <div>
-                                        <p>Place</p>
-                                        <p>Citraland, Surabaya</p>
-                                        <p>Indonesia</p>
-                                    </div>
+                                <div>
+                                    <p>Contact</p>
+                                    <p>ucok@mail.com</p>
+                                    <p>08567878667</p>
                                 </div>
+                            </div>
+                            <div class="flex gap-6">
+                                <div class="bg-indigo-300 w-20 h-20 flex justify-center items-center rounded-xl">
+                                    <img src="{{ asset('img/assets/Calendar.png') }}" class="w-8">
+                                </div>
+                                <div>
+                                    <p>Date and Time</p>
+                                    <p>Wednesday, 20 August 2026</p>
+                                    <p>11.00 am</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-6">
+                                <div class="bg-indigo-300 w-20 h-20 flex justify-center items-center rounded-xl">
+                                    <img src="{{ asset('img/assets/Group.png') }}" class="w-5">
+                                </div>
+                                <div>
+                                    <p>Place</p>
+                                    <p>Citraland, Surabaya</p>
+                                    <p>Indonesia</p>
+                                </div>
+                            </div>
                         </div>
 
                         <hr class="my-10 text-gray-400/50">
@@ -124,35 +133,56 @@
                             <hr class="my-2 text-gray-400/50">
                             <div class="flex justify-between my-5">
                                 <p>Total</p>
-                                <p>Rp.120000</p>
+                                <p>IDR 120.000</p>
                             </div>
                             <hr class="my-2 text-gray-400/50">
-                            <p class=" my-5">Payment Method</p>
+                            <p class="my-5">Payment Method</p>
 
-                            {{-- Payment Dropdown --}}
-                            <select x-model="paymentMethod"
-                                    class="w-full border border-gray-300 py-2 px-3 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-pink-300">
-                                <option value="" disabled selected>Select Payment Method</option>
-                                <option value="Mastercard">Mastercard</option>
-                                <option value="Visa">Visa</option>
-                                <option value="QRIS">QRIS</option>
-                                <option value="GoPay">GoPay</option>
-                                <option value="OVO">OVO</option>
-                            </select>
+                            {{-- Unified Dropdown --}}
+                            <div class="relative w-full mb-10" x-data="{ dropdownOpen: false }">
+                                <button
+                                    @click="dropdownOpen = !dropdownOpen"
+                                    class="w-full border border-gray-300 py-2 px-3 rounded-lg flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-pink-300">
+                                    <template x-if="!selectedMethod">
+                                        <span>Select Payment Method</span>
+                                    </template>
+                                    <template x-if="selectedMethod">
+                                        <div class="flex items-center space-x-2">
+                                            <img :src="selectedMethod.img" alt="" class="w-6 h-6">
+                                            <span x-text="selectedMethod.name"></span>
+                                        </div>
+                                    </template>
+                                    <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </button>
 
-                            {{-- Successful Payment Message --}}
+                                <div x-show="dropdownOpen" @click.outside="dropdownOpen = false"
+                                    class="absolute mt-2 w-full bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+                                    <template x-for="method in methods" :key="method.name">
+                                        <button
+                                            @click="selectedMethod = method; paymentMethod = method.name; dropdownOpen = false"
+                                            class="flex items-center w-full px-4 py-2 hover:bg-pink-100">
+                                            <img :src="method.img" alt="" class="w-auto h-6 mr-3">
+                                            <span x-text="method.name"></span>
+                                        </button>
+                                    </template>
+                                </div>
+                            </div>
+
+                            {{-- Success Message --}}
                             <div x-show="showSuccess" class="mb-4 p-2 bg-green-50 border border-green-200 text-black font-semibold rounded text-center">
                                 Successful Payment!
                             </div>
 
-                            {{-- Pay Now Button --}}
+                            {{-- Pay Now --}}
                             <button x-show="!showSuccess"
                                     @click.prevent="if(paymentMethod){ showSuccess = true; } else { alert('Please select a payment method!'); }"
                                     class="w-full bg-pink-200 text-black py-2 px-6 rounded-lg hover:bg-pink-300 transition">
                                 Pay Now
                             </button>
 
-                            {{-- See Invoice Button --}}
+                            {{-- See Invoice --}}
                             <button x-show="showSuccess" @click.prevent="modalStep='invoice'"
                                     class="w-full mt-2 bg-pink-200 text-black py-2 px-6 rounded-lg hover:bg-pink-300 transition">
                                 See Invoice
@@ -165,13 +195,13 @@
                         <div class="w-full flex text-center items-center justify-center">
                             <img src="{{ asset('img/logo/logo.png') }}" alt="" class="w-40">
                         </div>
-                        <div class="w-full  rounded space-y-2">
-                            <div class="bg-gray-100 p-4 mb-4 ">
+                        <div class="w-full rounded space-y-2">
+                            <div class="bg-gray-100 p-4 mb-4">
                                 <div class="flex justify-between">
                                     <p><strong>Invoice</strong></p>
                                     <div>
-                                    <p>Invoice No.</p>
-                                    <p><strong>202501</strong></p>
+                                        <p>Invoice No.</p>
+                                        <p><strong>202501</strong></p>
                                     </div>
                                 </div>
                                 <div class="flex justify-between">
@@ -180,8 +210,8 @@
                                         <p><strong>Client Name</strong></p>
                                     </div>
                                     <div>
-                                    <p>Issued on</p>
-                                    <p><strong>August 5, 2077</strong></p>
+                                        <p>Issued on</p>
+                                        <p><strong>August 5, 2077</strong></p>
                                     </div>
                                 </div>
                                 <div class="flex justify-between">
@@ -190,33 +220,29 @@
                                         <p><strong>081382498127</strong></p>
                                     </div>
                                     <div>
-                                    <p>Payment Due</p>
-                                    <p><strong>August 12, 2077</strong></p>
+                                        <p>Payment Due</p>
+                                        <p><strong>August 12, 2077</strong></p>
                                     </div>
                                 </div>
                             </div>
-                                <div class="flex justify-between">
-                                        <p><strong>Description</strong></p>
-                                    <div>
-                                        <p>Total</p>
-                                    </div>
+                            <div class="flex justify-between">
+                                <p><strong>Description</strong></p>
+                                <div><p>Total</p></div>
+                            </div>
+                            <div class="flex justify-between">
+                                <p><strong>Beginner Floral<br>Arrangement</strong></p>
+                                <div><p>4,000.00</p></div>
+                            </div>
+                            <div class="flex justify-end bg-indigo-50 p-4 gap-4">
+                                <div>
+                                    <p><strong>Subtotal</strong></p>
+                                    <p><strong>Total (USD)</strong></p>
                                 </div>
-                                <div class="flex justify-between">
-                                        <p><strong>Beginner Floral<br>Arrangement</strong></p>
-                                    <div>
-                                        <p>4,000.00</p>
-                                    </div>
+                                <div>
+                                    <p>4,000.00</p>
+                                    <p><strong>4,000.00</strong></p>
                                 </div>
-                                <div class="flex justify-end bg-indigo-50 p-4 gap-4">
-                                    <div>
-                                        <p><strong>Subtotal</strong></p>
-                                        <p><strong>Total (USD)</strong></p>
-                                    </div>
-                                    <div>
-                                        <p>4,000.00</p>
-                                        <p><strong>4,000.00</strong></p>
-                                    </div>
-                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
