@@ -3,7 +3,7 @@
         <x-navbar />
     </x-slot>
 
-    <section class="min-h-screen flex items-center justify-center bg-center bg-cover" style="background: url('{{ asset('img/bg/class.png') }}')">
+    <section class="min-h-screen flex items-center justify-center bg-white bg-center bg-cover">
         <div class="mx-auto text-center flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8">
             <h5 class="text-gray-600 underline font-['syne'] font-bold text-xl sm:text-2xl md:text-3xl mt-20 mb-10">
                 Find the perfect class for your floral journey

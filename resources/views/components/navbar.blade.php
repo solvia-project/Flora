@@ -1,4 +1,4 @@
-<nav class="bg-white py-3 shadow-sm">
+<nav class="bg-white py-3 shadow-sm border border-b border-gray-200">
     <div class="container mx-auto flex justify-between items-center px-4">
         {{-- Logo --}}
         <a href="/" class="font-bold text-lg  flex items-center">
