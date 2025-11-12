@@ -98,7 +98,7 @@
                 </div>
             </div>
             <div class="my-10">
-                <button class="bg-black text-white px-6 py-2">Book Now</button>
+                <a href="/booking" class="bg-black text-white px-6 py-2">Book Now</a>
             </div>
         </div>
     </section>

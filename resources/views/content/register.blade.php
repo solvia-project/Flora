@@ -28,7 +28,7 @@
 
                 {{-- Tombol Register --}}
                 <div class="w-full mt-8 text-center ">
-                    <button class="bg-[#F8CDCD] text-black py-2 px-6 rounded text-sm sm:text-base hover:shadow-lg transition">
+                    <button name="register" class="w-full bg-[#F8CDCD] text-black py-2 px-6 rounded text-sm sm:text-base hover:shadow-lg transition">
                         Register
                     </button>
                     <p class="mt-4">Already have an account? <a href="/login" class="underline">Login</a></p>

@@ -16,9 +16,9 @@
             </h1>
 
             <div class="mt-8">
-                <p class="bg-black text-white py-2 px-6 rounded inline-block text-sm sm:text-base cursor-pointer hover:bg-gray-800 transition">
+                <a href="/booking" class="bg-black text-white py-2 px-6 rounded inline-block text-sm sm:text-base cursor-pointer hover:bg-gray-800 transition">
                     Book Now
-                </p>
+                </a>
             </div>
         </div>
     </section>
