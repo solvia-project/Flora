@@ -4,10 +4,9 @@
     </x-slot>
 
     {{-- ABOUT SECTION --}}
-    <section class="min-h-screen flex items-center justify-center bg-center bg-cover"
-             style="background-image: url('{{ asset('img/bg/aboutus.png') }}');">
-        <div class="max-w-5xl mx-auto text-center flex flex-col items-center justify-center px-6 py-16 space-y-10">
-
+    <section class="min-h-screen flex flex-col items-center justify-start bg-center bg-cover"
+         style="background-image: url('{{ asset('img/bg/aboutus.png') }}');">
+        <div class="max-w-5xl mx-auto text-center flex flex-col items-center px-6 pt-24 space-y-10">
             {{-- Cloud Heading --}}
             <div class="relative w-full flex justify-center items-center">
                 <img src="{{ asset('img/cloud1.png') }}" alt="Cloud" class="w-96 z-0">
@@ -16,9 +15,8 @@
                 </p>
             </div>
 
-
             {{-- About Text --}}
-            <div class="flex flex-col gap-6 bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-lg max-w-3xl text-gray-700 text-justify">
+            <div class="flex flex-col gap-6 bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-lg max-w-3xl text-gray-700 text-center">
                 <p>
                     At <span class="font-semibold">FloraLearn</span>, we believe that everyone has the ability to create something beautiful — no matter their background or experience.
                     Inspired by a passion for flowers and creativity, FloraLearn offers welcoming and hands-on flower arrangement classes for anyone who wishes to explore the art of floral design.
@@ -31,6 +29,7 @@
             </div>
         </div>
     </section>
+
 
     {{-- CONTACT SECTION --}}
     <section class="flex flex-col items-center justify-center py-4 bg-indigo-50 text-center">
