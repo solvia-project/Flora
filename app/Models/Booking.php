@@ -11,10 +11,10 @@ class Booking extends Model
     use HasFactory;
 
     protected $fillable = [
+        'invoice_no',
         'user_id',
         'class_id',
         'booking_date',
-        'proof_of_payment_path',
         'status',
     ];
 

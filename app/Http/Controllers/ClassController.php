@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\WorkshopClass;
+
 class ClassController extends Controller
 {
     public function index()
     {
-        return view('content.class');
+        $classes = WorkshopClass::orderBy('starts_at')->get();
+        return view('content.class', compact('classes'));
     }
 }

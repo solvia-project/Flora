@@ -8,9 +8,9 @@
 
         <div
             x-data="{
-                open: false,
+                open: {{ (($modalStep ?? null) === 'payment' || ($modalStep ?? null) === 'invoice' || isset($invoiceBooking)) ? 'true' : 'false' }},
                 showSuccess: false,
-                modalStep: 'payment',
+                modalStep: '{{ $modalStep ?? 'payment' }}',
                 paymentMethod: '',
                 selectedMethod: null,
                 methods: [
@@ -23,9 +23,9 @@
                 validateForm() {
                     const name = $refs.userName.value.trim();
                     const email = $refs.userEmail.value.trim();
-                    const password = $refs.userPassword.value.trim();
+                    const phone = $refs.userPhone.value.trim();
                     const userClass = $refs.userClass.value;
-                    return name && email && password && userClass && userClass !== 'Select Class';
+                    return name && email && phone && userClass && userClass !== 'Select Class';
                 }
             }"
             class="w-full max-w-4xl bg-white rounded-lg shadow-lg p-8 md:p-12">
@@ -39,30 +39,41 @@
             </p>
 
             {{-- Form --}}
-            <form class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4" @submit.prevent>
-                <input type="text" placeholder="Your Name" x-ref="userName"
+            <form method="POST" action="{{ route('booking.store') }}" id="bookingForm" class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+                @csrf
+                <input type="text" placeholder="Your Name" x-ref="userName" value="{{ Auth::user()->name ?? '' }}"
                        class="w-full border border-gray-300 py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300">
-                <input type="email" placeholder="Your Email" x-ref="userEmail"
+                <input type="email" placeholder="Your Email" x-ref="userEmail" value="{{ Auth::user()->email ?? '' }}"
                        class="w-full border border-gray-300 py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300">
-                <input type="password" placeholder="Your Password" x-ref="userPassword"
+                <input type="tel" placeholder="Your Phone" x-ref="userPhone" value="{{ Auth::user()->phone ?? '' }}"
                        class="w-full border border-gray-300 py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300">
-                <select x-ref="userClass"
+                <select x-ref="userClass" name="class_id"
                         class="w-full border border-gray-300 py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300">
-                    <option>Select Class</option>
-                    <option>Beginner</option>
-                    <option>Intermediate</option>
-                    <option>Advanced</option>
+                    <option value="">Select Class</option>
+                    @foreach(($classes ?? []) as $c)
+                        <option value="{{ $c->id }}" @selected(old('class_id') == $c->id)>{{ $c->name }} — IDR {{ number_format($c->price, 0, ',', '.') }}</option>
+                    @endforeach
                 </select>
-                <input type="date" x-ref="userDate"
+                @error('class_id')
+                    <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                @enderror
+
+                <input type="date" x-ref="userDate" name="date" value="{{ old('date') }}"
                        class="w-full border border-gray-300 py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300">
-                <input type="time" x-ref="userTime" min="09:00" max="18:00" value="09:00"
+                @error('date')
+                    <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                @enderror
+
+                <input type="time" x-ref="userTime" name="time" min="09:00" max="18:00" value="{{ old('time', '09:00') }}"
                        class="w-full border border-gray-300 py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300">
+                @error('time')
+                    <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                @enderror
             </form>
 
             {{-- Book Now Button --}}
             <div class="mt-6 text-end">
-                <button type="button"
-                        @click="if(validateForm()) { open = true; showSuccess = false; modalStep='payment'; } else { alert('Please fill out all fields!'); }"
+                <button type="submit" form="bookingForm"
                         class="bg-pink-300 text-black py-2 px-6 rounded-lg hover:bg-pink-700 transition">
                     Book Now
                 </button>
@@ -81,7 +92,7 @@
 
                     {{-- Step: Payment --}}
                     <div x-show="modalStep === 'payment'" x-transition class="p-5">
-                        <h2 class="text-xl font-bold font-['syne'] mb-4">Beginner Floral Arrangement</h2>
+                        <h2 class="text-xl font-bold font-['syne'] mb-4">{{ isset($invoiceBooking) ? optional($invoiceBooking->class)->name : 'Beginner Floral Arrangement' }}</h2>
 
                         {{-- Summary Info --}}
                         <div class="grid grid-cols-2 grid-rows-2 gap-4 mb-4">
@@ -91,7 +102,7 @@
                                 </div>
                                 <div>
                                     <p>Name</p>
-                                    <p>Ucok</p>
+                                    <p>{{ isset($invoiceBooking) ? optional($invoiceBooking->user)->name : (Auth::user()->name ?? '—') }}</p>
                                 </div>
                             </div>
                             <div class="flex gap-6">
@@ -100,8 +111,8 @@
                                 </div>
                                 <div>
                                     <p>Contact</p>
-                                    <p>ucok@mail.com</p>
-                                    <p>08567878667</p>
+                                    <p>{{ isset($invoiceBooking) ? optional($invoiceBooking->user)->email : (Auth::user()->email ?? '—') }}</p>
+                                    <p>{{ isset($invoiceBooking) ? optional($invoiceBooking->user)->phone : (Auth::user()->phone ?? '—') }}</p>
                                 </div>
                             </div>
                             <div class="flex gap-6">
@@ -110,8 +121,8 @@
                                 </div>
                                 <div>
                                     <p>Date and Time</p>
-                                    <p>Wednesday, 20 August 2026</p>
-                                    <p>11.00 am</p>
+                                    <p>{{ isset($invoiceBooking) ? optional($invoiceBooking->booking_date)->format('l, d F Y') : '-' }}</p>
+                                    <p>{{ isset($invoiceBooking) ? optional($invoiceBooking->booking_date)->format('H:i') : '-' }}</p>
                                 </div>
                             </div>
                             <div class="flex gap-6">
@@ -120,8 +131,7 @@
                                 </div>
                                 <div>
                                     <p>Place</p>
-                                    <p>Citraland, Surabaya</p>
-                                    <p>Indonesia</p>
+                                    <p>{{ isset($invoiceBooking) ? optional($invoiceBooking->class)->location : '—' }}</p>
                                 </div>
                             </div>
                         </div>
@@ -133,7 +143,7 @@
                             <hr class="my-2 text-gray-400/50">
                             <div class="flex justify-between my-5">
                                 <p>Total</p>
-                                <p>IDR 120.000</p>
+                                <p>{{ isset($invoiceBooking) ? 'IDR '.number_format(optional($invoiceBooking->class)->price ?? 0, 0, ',', '.') : '-' }}</p>
                             </div>
                             <hr class="my-2 text-gray-400/50">
                             <p class="my-5">Payment Method</p>
@@ -176,8 +186,12 @@
                             </div>
 
                             {{-- Pay Now --}}
-                            <button x-show="!showSuccess"
-                                    @click.prevent="if(paymentMethod){ showSuccess = true; } else { alert('Please select a payment method!'); }"
+                            <form id="paymentForm" method="POST" action="{{ route('booking.pay') }}">
+                                @csrf
+                                <input type="hidden" name="booking_id" value="{{ $invoiceBooking->id ?? '' }}">
+                                <input type="hidden" name="payment_method" :value="paymentMethod">
+                            </form>
+                            <button x-show="!showSuccess" type="submit" form="paymentForm"
                                     class="w-full bg-pink-200 text-black py-2 px-6 rounded-lg hover:bg-pink-300 transition">
                                 Pay Now
                             </button>
@@ -201,27 +215,27 @@
                                     <p><strong>Invoice</strong></p>
                                     <div>
                                         <p>Invoice No.</p>
-                                        <p><strong>202501</strong></p>
+                                        <p><strong>{{ $invoiceBooking->invoice_no ?? ($invoiceBooking->id ?? '') }}</strong></p>
                                     </div>
                                 </div>
                                 <div class="flex justify-between">
                                     <div class="flex flex-col">
                                         <p>Billed To:</p>
-                                        <p><strong>Client Name</strong></p>
+                                        <p><strong>{{ optional(optional($invoiceBooking)->user)->name ?? '' }}</strong></p>
                                     </div>
                                     <div>
                                         <p>Issued on</p>
-                                        <p><strong>August 5, 2077</strong></p>
+                                        <p><strong>{{ isset($invoiceBooking) ? optional($invoiceBooking->created_at)->format('F j, Y') : '' }}</strong></p>
                                     </div>
                                 </div>
                                 <div class="flex justify-between">
                                     <div class="flex flex-col">
                                         <p>Contact</p>
-                                        <p><strong>081382498127</strong></p>
+                                        <p><strong>{{ optional(optional($invoiceBooking)->user)->phone ?? '' }}</strong></p>
                                     </div>
                                     <div>
                                         <p>Payment Due</p>
-                                        <p><strong>August 12, 2077</strong></p>
+                                        <p><strong>{{ isset($invoiceBooking) ? optional($invoiceBooking->booking_date)->format('F j, Y') : '' }}</strong></p>
                                     </div>
                                 </div>
                             </div>
@@ -230,17 +244,17 @@
                                 <div><p>Total</p></div>
                             </div>
                             <div class="flex justify-between">
-                                <p><strong>Beginner Floral<br>Arrangement</strong></p>
-                                <div><p>4,000.00</p></div>
+                                <p><strong>{{ optional(optional($invoiceBooking)->class)->name ?? '' }}</strong></p>
+                                <div><p>{{ isset($invoiceBooking) ? number_format(optional($invoiceBooking->class)->price ?? 0, 0, ',', '.') : '' }}</p></div>
                             </div>
                             <div class="flex justify-end bg-indigo-50 p-4 gap-4">
                                 <div>
                                     <p><strong>Subtotal</strong></p>
-                                    <p><strong>Total (USD)</strong></p>
+                                    <p><strong>Total (IDR)</strong></p>
                                 </div>
                                 <div>
-                                    <p>4,000.00</p>
-                                    <p><strong>4,000.00</strong></p>
+                                    <p>{{ isset($invoiceBooking) ? number_format(optional($invoiceBooking->class)->price ?? 0, 0, ',', '.') : '' }}</p>
+                                    <p><strong>{{ isset($invoiceBooking) ? number_format(optional($invoiceBooking->class)->price ?? 0, 0, ',', '.') : '' }}</strong></p>
                                 </div>
                             </div>
                         </div>

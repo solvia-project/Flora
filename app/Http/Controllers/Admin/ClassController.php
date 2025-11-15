@@ -9,6 +9,7 @@ use App\Models\WorkshopClass;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Carbon;
 
 class ClassController extends Controller
 {
@@ -28,6 +29,9 @@ class ClassController extends Controller
     public function store(StoreClassRequest $request): RedirectResponse
     {
         $data = $request->validated();
+        if (isset($data['starts_at'])) {
+            $data['starts_at'] = Carbon::createFromFormat('Y-m-d\TH:i', $data['starts_at']);
+        }
         if ($request->hasFile('image')) {
             $data['image_path'] = $request->file('image')->store('classes', 'public');
         }
@@ -39,6 +43,9 @@ class ClassController extends Controller
     {
         $class = WorkshopClass::findOrFail($id);
         $data = $request->validated();
+        if (isset($data['starts_at'])) {
+            $data['starts_at'] = Carbon::createFromFormat('Y-m-d\TH:i', $data['starts_at']);
+        }
         if ($request->hasFile('image')) {
             if ($class->image_path) {
                 Storage::disk('public')->delete($class->image_path);
