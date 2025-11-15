@@ -31,6 +31,9 @@
                     <button name="register" class="w-full bg-[#F8CDCD] text-black py-2 px-6 rounded text-sm sm:text-base hover:shadow-lg transition">
                         Register
                     </button>
+                    <a href="/login" class="inline-block w-full mt-3 bg-white border border-gray-300 text-gray-700 py-2 px-6 rounded text-sm sm:text-base hover:shadow-lg transition text-center">
+                        Sign in
+                    </a>
                     <p class="mt-4">Already have an account? <a href="/login" class="underline">Login</a></p>
                 </div>
             </div>

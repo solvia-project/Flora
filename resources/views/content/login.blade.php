@@ -34,6 +34,9 @@
                     <button class="w-full bg-[#F8CDCD] text-black py-2 px-6 rounded text-sm sm:text-base hover:shadow-lg transition" onclick="window.location.href='/about'">
                         Login
                     </button>
+                    <a href="/register" class="inline-block w-full mt-3 bg-white border border-gray-300 text-gray-700 py-2 px-6 rounded text-sm sm:text-base hover:shadow-lg transition text-center">
+                        Create account
+                    </a>
                     <p class="mt-4"> <a href="/login" class="hover:underline">Forgot Password?</a></p>
                 </div>
             </div>
