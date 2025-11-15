@@ -44,7 +44,7 @@
                        class="w-full border border-gray-300 py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300">
                 <input type="email" placeholder="Your Email" x-ref="userEmail"
                        class="w-full border border-gray-300 py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300">
-                <input type="password" placeholder="Your Password" x-ref="userPassword"
+                <input type="phone" placeholder="(+62)" x-ref="userPassword"
                        class="w-full border border-gray-300 py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300">
                 <select x-ref="userClass"
                         class="w-full border border-gray-300 py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300">
