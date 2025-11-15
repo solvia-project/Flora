@@ -63,15 +63,15 @@
                           </tr>
                         </thead>
                         <tbody>
-                            @for ($i = 0; $i < 20; $i++)
+                            @foreach(($users ?? []) as $u)
                                 <tr>
-                                    <td>1</td>
-                                    <td>Tiger Nixon</td>
-                                    <td>jokowi@mail.com</td>
-                                    <td>08123173298</td>
-                                    <td>19:15 2011/04/25</td>
+                                    <td>{{ $u->id }}</td>
+                                    <td>{{ $u->name }}</td>
+                                    <td>{{ $u->email }}</td>
+                                    <td>{{ $u->phone ?? '-' }}</td>
+                                    <td>{{ $u->created_at->format('d-m-Y H:i') }}</td>
                                 </tr>
-                            @endfor
+                            @endforeach
                         </tbody>
                       </table>
                     </div>

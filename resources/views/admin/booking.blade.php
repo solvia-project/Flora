@@ -65,17 +65,17 @@
                           </tr>
                         </thead>
                         <tbody>
-                            @for ($i = 0; $i < 20; $i++)
+                            @foreach(($bookings ?? []) as $b)
                                 <tr>
-                                    <td>1</td>
-                                    <td>Tiger Nixon</td>
-                                    <td>jokowi@mail.com</td>
-                                    <td>08123173298</td>
-                                    <td>Wedding Floral Arrangement</td>
-                                    <td>19:15 2011/04/25</td>
-                                    <td>19:15 2011/04/25</td>
+                                    <td>{{ $b->id }}</td>
+                                    <td>{{ $b->user->name ?? '-' }}</td>
+                                    <td>{{ $b->user->email ?? '-' }}</td>
+                                    <td>{{ $b->user->phone ?? '-' }}</td>
+                                    <td>{{ optional($b->class)->name }}</td>
+                                    <td>{{ optional($b->booking_date)->format('d-m-Y H:i') }}</td>
+                                    <td>{{ $b->created_at->format('d-m-Y H:i') }}</td>
                                 </tr>
-                            @endfor
+                            @endforeach
                         </tbody>
                       </table>
                     </div>
