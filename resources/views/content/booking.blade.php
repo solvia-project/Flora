@@ -91,7 +91,7 @@
                                 </div>
                                 <div>
                                     <p>Name</p>
-                                    <p>Ucok</p>
+                                    <p>Glody</p>
                                 </div>
                             </div>
                             <div class="flex gap-6">
@@ -100,7 +100,7 @@
                                 </div>
                                 <div>
                                     <p>Contact</p>
-                                    <p>ucok@mail.com</p>
+                                    <p>goldy@mail.com</p>
                                     <p>08567878667</p>
                                 </div>
                             </div>
