@@ -23,9 +23,9 @@
                 validateForm() {
                     const name = $refs.userName.value.trim();
                     const email = $refs.userEmail.value.trim();
-                    const password = $refs.userPassword.value.trim();
+                    const phone = $refs.userPhone.value.trim();
                     const userClass = $refs.userClass.value;
-                    return name && email && password && userClass && userClass !== 'Select Class';
+                    return name && email && phone && userClass && userClass !== 'Select Class';
                 }
             }"
             class="w-full max-w-4xl bg-white rounded-lg shadow-lg p-8 md:p-12">
@@ -44,7 +44,7 @@
                        class="w-full border border-gray-300 py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300">
                 <input type="email" placeholder="Your Email" x-ref="userEmail"
                        class="w-full border border-gray-300 py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300">
-                <input type="password" placeholder="Your Password" x-ref="userPassword"
+                <input type="phone" placeholder="Your Phone" x-ref="userPhone"
                        class="w-full border border-gray-300 py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300">
                 <select x-ref="userClass"
                         class="w-full border border-gray-300 py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300">
