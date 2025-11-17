@@ -18,13 +18,7 @@ class BookingController extends Controller
         if ($id) {
             $invoiceBooking = Booking::with(['class', 'user'])->find($id);
         }
-        if (!$invoiceBooking && Auth::check()) {
-            $invoiceBooking = Booking::with(['class', 'user'])
-                ->where('user_id', Auth::id())
-                ->latest('id')
-                ->first();
-        }
-        $modalStep = session('modal_step', 'payment');
+        $modalStep = session('modal_step', 'none');
         return view('content.booking', compact('classes', 'invoiceBooking', 'modalStep'));
     }
 

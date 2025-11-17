@@ -8,7 +8,7 @@
 
         <div
             x-data="{
-                open: {{ (($modalStep ?? null) === 'payment' || ($modalStep ?? null) === 'invoice' || isset($invoiceBooking)) ? 'true' : 'false' }},
+                open: {{ (($modalStep ?? null) === 'payment' || ($modalStep ?? null) === 'invoice') ? 'true' : 'false' }},
                 showSuccess: false,
                 modalStep: '{{ $modalStep ?? 'payment' }}',
                 paymentMethod: '',
@@ -81,9 +81,9 @@
 
             {{-- Payment Modal --}}
             <div x-show="open" x-cloak
-                 class="fixed inset-0 flex items-center justify-center z-50 bg-black/20 backdrop-blur-sm">
+                 class="fixed inset-0 z-50 bg-black/20 backdrop-blur-sm overflow-y-auto p-4 flex items-center justify-center">
 
-                <div class="bg-white rounded-lg w-full max-w-3xl p-6 relative shadow-lg">
+                <div class="bg-white rounded-lg w-full max-w-3xl p-6 relative shadow-lg max-h-[85vh] overflow-y-auto">
                     <p class="my-5 cursor-pointer" @click="modalStep='payment'; showSuccess=false">&leftarrow; Purchase Arrangement</p>
 
                     {{-- Close --}}
