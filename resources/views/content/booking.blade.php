@@ -88,26 +88,30 @@
 
                     {{-- Close --}}
                     <button @click="open = false"
-                            class="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+                            class="absolute top-2 right-2 sm:top-4 sm:right-4 text-gray-500 hover:text-gray-700 text-xl sm:text-2xl">
+                        &times;
+                    </button>
 
                     {{-- Step: Payment --}}
                     <div x-show="modalStep === 'payment'" x-transition class="p-5">
                         <h2 class="text-xl font-bold font-['syne'] mb-4">{{ isset($invoiceBooking) ? optional($invoiceBooking->class)->name : 'Beginner Floral Arrangement' }}</h2>
 
                         {{-- Summary Info --}}
-                        <div class="grid grid-cols-2 grid-rows-2 gap-4 mb-4">
-                            <div class="flex gap-6">
-                                <div class="bg-indigo-300 w-20 h-20 flex justify-center items-center rounded-xl">
-                                    <img src="{{ asset('img/assets/people-outline.png') }}" class="w-8">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+
+                            <div class="flex gap-4 sm:gap-6">
+                                <div class="bg-indigo-300 w-16 h-16 sm:w-20 sm:h-20 flex justify-center items-center rounded-xl">
+                                    <img src="{{ asset('img/assets/people-outline.png') }}" class="w-6 sm:w-8">
                                 </div>
                                 <div>
                                     <p>Name</p>
                                     <p>{{ isset($invoiceBooking) ? optional($invoiceBooking->user)->name : (Auth::user()->name ?? '—') }}</p>
                                 </div>
                             </div>
-                            <div class="flex gap-6">
-                                <div class="bg-indigo-300 w-20 h-20 flex justify-center items-center rounded-xl">
-                                    <img src="{{ asset('img/assets/Mail.png') }}" class="w-8">
+
+                            <div class="flex gap-4 sm:gap-6">
+                                <div class="bg-indigo-300 w-16 h-16 sm:w-20 sm:h-20 flex justify-center items-center rounded-xl">
+                                    <img src="{{ asset('img/assets/Mail.png') }}" class="w-6 sm:w-8">
                                 </div>
                                 <div>
                                     <p>Contact</p>
@@ -115,9 +119,10 @@
                                     <p>{{ isset($invoiceBooking) ? optional($invoiceBooking->user)->phone : (Auth::user()->phone ?? '—') }}</p>
                                 </div>
                             </div>
-                            <div class="flex gap-6">
-                                <div class="bg-indigo-300 w-20 h-20 flex justify-center items-center rounded-xl">
-                                    <img src="{{ asset('img/assets/Calendar.png') }}" class="w-8">
+
+                            <div class="flex gap-4 sm:gap-6">
+                                <div class="bg-indigo-300 w-16 h-16 sm:w-20 sm:h-20 flex justify-center items-center rounded-xl">
+                                    <img src="{{ asset('img/assets/Calendar.png') }}" class="w-6 sm:w-8">
                                 </div>
                                 <div>
                                     <p>Date and Time</p>
@@ -125,40 +130,48 @@
                                     <p>{{ isset($invoiceBooking) ? optional($invoiceBooking->booking_date)->format('H:i') : '-' }}</p>
                                 </div>
                             </div>
-                            <div class="flex gap-6">
-                                <div class="bg-indigo-300 w-20 h-20 flex justify-center items-center rounded-xl">
-                                    <img src="{{ asset('img/assets/Group.png') }}" class="w-5">
+
+                            <div class="flex gap-4 sm:gap-6">
+                                <div class="bg-indigo-300 w-16 h-16 sm:w-20 sm:h-20 flex justify-center items-center rounded-xl">
+                                    <img src="{{ asset('img/assets/Group.png') }}" class="w-4 sm:w-5">
                                 </div>
                                 <div>
                                     <p>Place</p>
                                     <p>{{ isset($invoiceBooking) ? optional($invoiceBooking->class)->location : '—' }}</p>
                                 </div>
                             </div>
+
                         </div>
 
                         <hr class="my-10 text-gray-400/50">
 
-                        <div class="bg-indigo-50 px-5 py-10 rounded-lg">
-                            <h1 class="font-bold my-5">Summary</h1>
+                        {{-- Summary Card --}}
+                        <div class="bg-indigo-50 p-6 sm:p-8 rounded-lg">
+
+                            <h1 class="font-bold my-5 text-lg">Summary</h1>
+
                             <hr class="my-2 text-gray-400/50">
-                            <div class="flex justify-between my-5">
+
+                            <div class="flex justify-between my-5 text-sm sm:text-base">
                                 <p>Total</p>
                                 <p>{{ isset($invoiceBooking) ? 'IDR '.number_format(optional($invoiceBooking->class)->price ?? 0, 0, ',', '.') : '-' }}</p>
                             </div>
+
                             <hr class="my-2 text-gray-400/50">
-                            <p class="my-5">Payment Method</p>
+
+                            <p class="my-5 text-sm sm:text-base">Payment Method</p>
 
                             {{-- Unified Dropdown --}}
                             <div class="relative w-full mb-10" x-data="{ dropdownOpen: false }">
                                 <button
                                     @click="dropdownOpen = !dropdownOpen"
-                                    class="w-full border border-gray-300 py-2 px-3 rounded-lg flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-pink-300">
+                                    class="w-full border border-gray-300 py-2 px-3 rounded-lg flex items-center justify-between text-sm sm:text-base">
                                     <template x-if="!selectedMethod">
                                         <span>Select Payment Method</span>
                                     </template>
                                     <template x-if="selectedMethod">
                                         <div class="flex items-center space-x-2">
-                                            <img :src="selectedMethod.img" alt="" class="w-6 h-6">
+                                            <img :src="selectedMethod.img" class="w-5 h-5 sm:w-6 sm:h-6">
                                             <span x-text="selectedMethod.name"></span>
                                         </div>
                                     </template>
@@ -169,19 +182,22 @@
 
                                 <div x-show="dropdownOpen" @click.outside="dropdownOpen = false"
                                     class="absolute mt-2 w-full bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+
                                     <template x-for="method in methods" :key="method.name">
                                         <button
                                             @click="selectedMethod = method; paymentMethod = method.name; dropdownOpen = false"
-                                            class="flex items-center w-full px-4 py-2 hover:bg-pink-100">
-                                            <img :src="method.img" alt="" class="w-auto h-6 mr-3">
+                                            class="flex items-center w-full px-4 py-2 hover:bg-pink-100 text-sm sm:text-base">
+                                            <img :src="method.img" class="w-auto h-5 sm:h-6 mr-3">
                                             <span x-text="method.name"></span>
                                         </button>
                                     </template>
+
                                 </div>
                             </div>
 
                             {{-- Success Message --}}
-                            <div x-show="showSuccess" class="mb-4 p-2 bg-green-50 border border-green-200 text-black font-semibold rounded text-center">
+                            <div x-show="showSuccess"
+                                 class="mb-4 p-2 bg-green-50 border border-green-200 text-black font-semibold rounded text-center text-sm sm:text-base">
                                 Successful Payment!
                             </div>
 
@@ -198,18 +214,21 @@
 
                             {{-- See Invoice --}}
                             <button x-show="showSuccess" @click.prevent="modalStep='invoice'"
-                                    class="w-full mt-2 bg-pink-200 text-black py-2 px-6 rounded-lg hover:bg-pink-300 transition">
+                                    class="w-full mt-2 bg-pink-200 text-black py-2 px-6 rounded-lg hover:bg-pink-300 transition text-sm sm:text-base">
                                 See Invoice
                             </button>
                         </div>
                     </div>
 
                     {{-- Step: Invoice --}}
-                    <div x-show="modalStep === 'invoice'" x-transition>
+                    <div x-show="modalStep === 'invoice'" x-transition class="p-2 sm:p-4">
+
                         <div class="w-full flex text-center items-center justify-center">
                             <img src="{{ asset('img/logo/logo.png') }}" alt="" class="w-40">
                         </div>
-                        <div class="w-full rounded space-y-2">
+
+                        <div class="w-full rounded space-y-2 text-sm sm:text-base">
+
                             <div class="bg-gray-100 p-4 mb-4">
                                 <div class="flex justify-between">
                                     <p><strong>Invoice</strong></p>
@@ -219,7 +238,7 @@
                                     </div>
                                 </div>
                                 <div class="flex justify-between">
-                                    <div class="flex flex-col">
+                                    <div>
                                         <p>Billed To:</p>
                                         <p><strong>{{ optional(optional($invoiceBooking)->user)->name ?? '' }}</strong></p>
                                     </div>
@@ -229,7 +248,7 @@
                                     </div>
                                 </div>
                                 <div class="flex justify-between">
-                                    <div class="flex flex-col">
+                                    <div>
                                         <p>Contact</p>
                                         <p><strong>{{ optional(optional($invoiceBooking)->user)->phone ?? '' }}</strong></p>
                                     </div>
@@ -239,14 +258,17 @@
                                     </div>
                                 </div>
                             </div>
+
                             <div class="flex justify-between">
                                 <p><strong>Description</strong></p>
                                 <div><p>Total</p></div>
                             </div>
+
                             <div class="flex justify-between">
                                 <p><strong>{{ optional(optional($invoiceBooking)->class)->name ?? '' }}</strong></p>
                                 <div><p>{{ isset($invoiceBooking) ? number_format(optional($invoiceBooking->class)->price ?? 0, 0, ',', '.') : '' }}</p></div>
                             </div>
+
                             <div class="flex justify-end bg-indigo-50 p-4 gap-4">
                                 <div>
                                     <p><strong>Subtotal</strong></p>
@@ -257,10 +279,13 @@
                                     <p><strong>{{ isset($invoiceBooking) ? number_format(optional($invoiceBooking->class)->price ?? 0, 0, ',', '.') : '' }}</strong></p>
                                 </div>
                             </div>
+
                         </div>
                     </div>
+
                 </div>
             </div>
+
         </div>
     </section>
 </x-app>
