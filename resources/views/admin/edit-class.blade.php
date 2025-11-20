@@ -58,69 +58,169 @@
                 <div class="edit-profile">
                   <div class="row">
                     <div class="col-xl-12">
-                      <form class="card" method="POST" action="{{ isset($class) ? route('admin.class.update', $class->id) : route('admin.class.store') }}" enctype="multipart/form-data">
-                    <div class="card-header pb-0">
-                      <h4 class="card-title mb-0">Edit Profile</h4>
-                      <div class="card-options"><a class="card-options-collapse" href="#" data-bs-toggle="card-collapse"><i class="fe fe-chevron-up"></i></a><a class="card-options-remove" href="#" data-bs-toggle="card-remove"><i class="fe fe-x"></i></a></div>
+                      <form class="card" method="POST"
+      action="{{ isset($class) ? route('admin.class.update', $class->id) : route('admin.class.store') }}"
+      enctype="multipart/form-data">
+
+    @csrf
+    @if(isset($class))
+        @method('PUT')
+    @endif
+
+    <div class="card-header pb-0">
+        <h4 class="card-title mb-0">Edit Class</h4>
+        <div class="card-options">
+            <a class="card-options-collapse" href="#" data-bs-toggle="card-collapse"><i class="fe fe-chevron-up"></i></a>
+            <a class="card-options-remove" href="#" data-bs-toggle="card-remove"><i class="fe fe-x"></i></a>
+        </div>
+    </div>
+
+    <div class="card-body">
+
+        <!-- GRID 4 KOLOM -->
+        <div class="row g-4">
+
+            <!-- Class Name -->
+            <div class="col-md-3">
+                <label class="form-label">Class Name</label>
+                <input class="form-control" name="name" type="text" placeholder="Class"
+                       value="{{ old('name', $class->name ?? '') }}">
+            </div>
+
+            <!-- Max Person -->
+            <div class="col-md-3">
+                <label class="form-label">Max Person</label>
+                <input class="form-control" name="max" type="number" step="1" placeholder="Max Person"
+                       value="{{ old('max', $class->max ?? '') }}">
+            </div>
+
+            <!-- Price -->
+            <div class="col-md-3">
+                <label class="form-label">Price (Rupiah)</label>
+                <input class="form-control" name="price" type="number" step="0.01"
+                       placeholder="Rupiah" value="{{ old('price', $class->price ?? '') }}">
+            </div>
+
+            <!-- Location -->
+            <div class="col-md-3">
+                <label class="form-label">Location</label>
+                <input class="form-control" name="location" type="text" placeholder="Location"
+                       value="{{ old('location', $class->location ?? '') }}">
+            </div>
+
+        </div>
+
+        <!-- GRID UNTUK DAY + START TIME + END TIME -->
+        <div class="row g-4 mt-2">
+
+            <!-- Select Day -->
+            <div class="col-md-4">
+                <label class="form-label d-block">Select Day</label>
+
+                <button id="dropdownRadioBgHoverButton" data-dropdown-toggle="dropdownRadioBgHover"
+                    class="inline-flex items-center justify-center text-white bg-brand border border-transparent
+                           hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium
+                           rounded-md text-sm px-4 py-2.5 w-100" type="button">
+                    {{ old('day', $class->day ?? 'Select Day') }}
+                    <svg class="w-4 h-4 ms-1.5 -me-0.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                         viewBox="0 0 24 24" fill="none" width="24" height="24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                              stroke-width="2" d="m19 9-7 7-7-7"/>
+                    </svg>
+                </button>
+
+                <!-- Dropdown Menu -->
+                <div id="dropdownRadioBgHover"
+                     class="z-10 hidden bg-white border rounded-md shadow-lg w-44 mt-1">
+
+                    <ul class="p-2 text-sm">
+
+                        @foreach(['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'] as $day)
+                        <li>
+                            <label class="inline-flex items-center w-full p-2 hover:bg-gray-100 rounded cursor-pointer">
+                                <input type="radio" name="day" value="{{ $day }}"
+                                       {{ old('day', $class->day ?? '') == $day ? 'checked' : '' }}
+                                       class="w-4 h-4 rounded-full border-gray-400">
+                                <span class="ms-2">{{ $day }}</span>
+                            </label>
+                        </li>
+                        @endforeach
+
+                    </ul>
+                </div>
+            </div>
+
+
+<!-- Time 1 -->
+<div class="col-md-4 relative">
+    <label for="time_1" class="block mb-1 text-sm font-medium text-heading">Time 1</label>
+    <input
+        type="time"
+        id="time_1"
+        name="time_1"
+        class="block w-full p-2.5 pr-10 bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-md focus:ring-brand focus:border-brand shadow-xs"
+        min="09:00"
+        max="18:00"
+        required
+    />
+</div>
+
+<!-- Time 2 -->
+<div class="col-md-4 relative">
+    <label for="time_2" class="block mb-1 text-sm font-medium text-heading">Time 2</label>
+    <input
+        type="time"
+        id="time_2"
+        name="time_2"
+        class="block w-full p-2.5 pr-10 bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-md focus:ring-brand focus:border-brand shadow-xs"
+        min="09:00"
+        max="18:00"
+        required
+    />
+</div>
+
+        </div>
+
+        <!-- GRID 2 KOLOM -->
+        <div class="row g-4 mt-2">
+
+            <!-- Duration -->
+            <div class="col-md-6">
+                <label class="form-label">Duration (Minutes)</label>
+                <input class="form-control" name="duration_minutes"
+                       type="number" min="1" placeholder="Minutes"
+                       value="{{ old('duration_minutes', $class->duration_minutes ?? '') }}">
+            </div>
+
+            <!-- Image -->
+            <div class="col-md-6">
+                <label class="form-label">Image Product</label>
+                <input class="form-control" name="image" type="file" accept="image/*">
+
+                @if(isset($class) && $class->image_path)
+                    <div class="mt-2">
+                        <img src="{{ asset('storage/'.$class->image_path) }}" class="img-thumbnail"
+                             style="width:160px;height:160px;object-fit:cover;">
+                        <small class="text-muted">Current image preview</small>
                     </div>
-                    <div class="card-body">
-                      <div class="row">
-                        <div class="col-md-3">
-                          <div class="mb-3">
-                            <label class="form-label">Class Name</label>
-                            @csrf
-                            @if(isset($class))
-                                @method('PUT')
-                            @endif
-                            <input class="form-control" name="name" type="text" placeholder="Class" value="{{ old('name', $class->name ?? '') }}">
-                          </div>
-                        </div>
-                        <div class="col-sm-6 col-md-3">
-                          <div class="mb-3">
-                            <label class="form-label">Price (Rupiah)</label>
-                            <input class="form-control" name="price" type="number" step="0.01" placeholder="Rupiah" value="{{ old('price', $class->price ?? '') }}">
-                          </div>
-                        </div>
-                        <div class="col-sm-6 col-md-3">
-                          <div class="mb-3">
-                            <label class="form-label">Location</label>
-                            <input class="form-control" name="location" type="text" placeholder="Location" value="{{ old('location', $class->location ?? '') }}">
-                          </div>
-                        </div>
-                        <div class="col-sm-6 col-md-3">
-                          <div class="mb-3">
-                            <label class="form-label">Date & Time</label>
-                            <input class="form-control" name="starts_at" type="datetime-local" value="{{ old('starts_at', isset($class) && $class->starts_at ? $class->starts_at->format('Y-m-d\TH:i') : '') }}" placeholder="Date & Time">
-                          </div>
-                        </div>
-                        <div class="col-sm-6 col-md-3">
-                          <div class="mb-3">
-                            <label class="form-label">Duration (Hours)</label>
-                            <input class="form-control" name="duration_minutes" type="number" min="1" placeholder="Minutes" value="{{ old('duration_minutes', $class->duration_minutes ?? '') }}">
-                          </div>
-                        <div class="mb-3">
-                            <label class="form-label">Image Product</label>
-                            <input class="form-control" name="image" type="file" accept="image/*" placeholder="Drag & Drop File / Browse">
-                            @if(isset($class) && $class->image_path)
-                                <div class="mt-2">
-                                    <img src="{{ asset('storage/'.$class->image_path) }}" alt="Current image" class="img-thumbnail" style="width:160px;height:160px;object-fit:cover;">
-                                    <small class="text-muted d-block mt-1">Current image preview</small>
-                                </div>
-                            @endif
-                          </div>
-                        </div>
-                        <div class="col-md-9">
-                          <div>
-                            <label class="form-label">Description</label>
-                            <textarea class="form-control" name="description" rows="5" placeholder="Enter About your description">{{ old('description', $class->description ?? '') }}</textarea>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="card-footer text-end">
-                      <button class="bg-pink-300 px-4 py-2 rounded-2xl" type="submit">Save</button>
-                    </div>
-                  </form>
+                @endif
+            </div>
+
+        </div>
+
+        <!-- DESCRIPTION FULL WIDTH -->
+        <div class="mt-3">
+            <label class="form-label">Description</label>
+            <textarea class="form-control" name="description" rows="5"
+                      placeholder="Enter description">{{ old('description', $class->description ?? '') }}</textarea>
+        </div>
+
+    </div>
+
+    <div class="card-footer text-end">
+        <button class="btn btn-primary px-4" type="submit">Save</button>
+    </div>
+</form>
                     </div>
                   </div>
                 </div>
