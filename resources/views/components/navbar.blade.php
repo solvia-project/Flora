@@ -21,9 +21,19 @@
                 <li><a href="/classes" class="hover:text-pink-600">Class List</a></li>
                 <li><a href="/booking" class="hover:text-pink-600">Booking</a></li>
             </ul>
-            <a href="/login" class="bg-pink-200 py-2 px-6 mt-2 md:mt-0 rounded hover:bg-pink-300 transition">
-                Login
-            </a>
+            @guest
+                <a href="{{ route('login') }}" class="bg-pink-200 py-2 px-6 mt-2 md:mt-0 rounded hover:bg-pink-300 transition">
+                    Login
+                </a>
+            @endguest
+            @auth
+                <form method="POST" action="{{ route('logout') }}" class="mt-2 md:mt-0">
+                    @csrf
+                    <button type="submit" class="bg-pink-200 py-2 px-6 rounded hover:bg-pink-300 transition">
+                        Logout
+                    </button>
+                </form>
+            @endauth
         </div>
     </div>
 </nav>
