@@ -55,4 +55,14 @@ class ClassController extends Controller
         $class->update($data);
         return redirect()->route('admin.class.index');
     }
+
+    public function destroy($id): RedirectResponse
+    {
+        $class = WorkshopClass::findOrFail($id);
+        if ($class->image_path) {
+            Storage::disk('public')->delete($class->image_path);
+        }
+        $class->delete();
+        return redirect()->route('admin.class.index');
+    }
 }

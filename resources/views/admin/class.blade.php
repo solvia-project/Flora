@@ -52,8 +52,19 @@
           <!-- Container-fluid starts-->
           <div class="container-fluid">
             <div class="row">
+              <div class="col-md-3 col-lg-2 mb-3">
+                <div class="card">
+                  <div class="card-body p-0">
+                    <ul class="list-group list-group-flush">
+                      <a href="{{ route('admin.booking.index') }}" class="list-group-item list-group-item-action {{ request()->routeIs('admin.booking.index') ? 'active' : '' }}">Booking</a>
+                      <a href="{{ route('admin.user.index') }}" class="list-group-item list-group-item-action {{ request()->routeIs('admin.user.index') ? 'active' : '' }}">Users</a>
+                      <a href="{{ route('admin.class.index') }}" class="list-group-item list-group-item-action {{ request()->routeIs('admin.class.index') ? 'active' : '' }}">Classes</a>
+                    </ul>
+                  </div>
+                </div>
+              </div>
               <!-- HTML (DOM) sourced data  Starts-->
-              <div class="col-sm-12">
+              <div class="col-md-9 col-lg-10">
                 <div class="card">
 
                   <div class="card-body">
@@ -92,7 +103,14 @@
                                 <td>{{ Str::limit($c->description, 120) }}</td>
                                 <td>{{ $c->updated_at->format('d-m-Y H:i') }}</td>
                                 <td>
-                                    <a class="bg-yellow-600 p-2 rounded-2xl text-white" href="{{ route('admin.class.edit', ['id' => $c->id]) }}">edit</a>
+                                    <div class="btn-group" role="group" aria-label="Actions">
+                                        <a class="btn btn-warning btn-sm" href="{{ route('admin.class.edit', ['id' => $c->id]) }}">Edit</a>
+                                        <form method="POST" action="{{ route('admin.class.destroy', $c->id) }}" onsubmit="return confirm('Delete this class?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button class="btn btn-danger btn-sm" type="submit">Delete</button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
                         @endforeach

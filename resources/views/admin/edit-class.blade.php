@@ -42,10 +42,23 @@
           </div>
           <!-- Container-fluid starts-->
           <div class="container-fluid">
-            <div class="edit-profile">
-              <div class="row">
-                <div class="col-xl-8">
-                  <form class="card" method="POST" action="{{ isset($class) ? route('admin.class.update', $class->id) : route('admin.class.store') }}" enctype="multipart/form-data">
+            <div class="row">
+              <div class="col-md-3 col-lg-2 mb-3">
+                <div class="card">
+                  <div class="card-body p-0">
+                      <ul class="list-group list-group-flush">
+                        <a href="{{ route('admin.booking.index') }}" class="list-group-item list-group-item-action {{ request()->routeIs('admin.booking.index') ? 'active' : '' }}">Booking</a>
+                        <a href="{{ route('admin.user.index') }}" class="list-group-item list-group-item-action {{ request()->routeIs('admin.user.index') ? 'active' : '' }}">Users</a>
+                        <a href="{{ route('admin.class.index') }}" class="list-group-item list-group-item-action {{ request()->routeIs('admin.class.index') ? 'active' : '' }}">Classes</a>
+                      </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-9 col-lg-10">
+                <div class="edit-profile">
+                  <div class="row">
+                    <div class="col-xl-12">
+                      <form class="card" method="POST" action="{{ isset($class) ? route('admin.class.update', $class->id) : route('admin.class.store') }}" enctype="multipart/form-data">
                     <div class="card-header pb-0">
                       <h4 class="card-title mb-0">Edit Profile</h4>
                       <div class="card-options"><a class="card-options-collapse" href="#" data-bs-toggle="card-collapse"><i class="fe fe-chevron-up"></i></a><a class="card-options-remove" href="#" data-bs-toggle="card-remove"><i class="fe fe-x"></i></a></div>
@@ -88,6 +101,12 @@
                         <div class="mb-3">
                             <label class="form-label">Image Product</label>
                             <input class="form-control" name="image" type="file" accept="image/*" placeholder="Drag & Drop File / Browse">
+                            @if(isset($class) && $class->image_path)
+                                <div class="mt-2">
+                                    <img src="{{ asset('storage/'.$class->image_path) }}" alt="Current image" class="img-thumbnail" style="width:160px;height:160px;object-fit:cover;">
+                                    <small class="text-muted d-block mt-1">Current image preview</small>
+                                </div>
+                            @endif
                           </div>
                         </div>
                         <div class="col-md-9">
@@ -102,6 +121,8 @@
                       <button class="bg-pink-300 px-4 py-2 rounded-2xl" type="submit">Save</button>
                     </div>
                   </form>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

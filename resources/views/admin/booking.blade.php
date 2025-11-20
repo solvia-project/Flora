@@ -49,8 +49,19 @@
           <!-- Container-fluid starts-->
           <div class="container-fluid">
             <div class="row">
+              <div class="col-md-3 col-lg-2 mb-3">
+                <div class="card">
+                  <div class="card-body p-0">
+                    <ul class="list-group list-group-flush">
+                      <a href="{{ route('admin.booking.index') }}" class="list-group-item list-group-item-action {{ request()->routeIs('admin.booking.index') ? 'active' : '' }}">Booking</a>
+                      <a href="{{ route('admin.user.index') }}" class="list-group-item list-group-item-action {{ request()->routeIs('admin.user.index') ? 'active' : '' }}">Users</a>
+                      <a href="{{ route('admin.class.index') }}" class="list-group-item list-group-item-action {{ request()->routeIs('admin.class.index') ? 'active' : '' }}">Classes</a>
+                    </ul>
+                  </div>
+                </div>
+              </div>
               <!-- HTML (DOM) sourced data  Starts-->
-              <div class="col-sm-12">
+              <div class="col-md-9 col-lg-10">
                 <div class="card">
 
                   <div class="card-body">

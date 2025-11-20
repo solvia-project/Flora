@@ -28,6 +28,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/editclass', [AdminClassController::class, 'edit'])->name('admin.class.edit');
     Route::post('/admin/class', [AdminClassController::class, 'store'])->name('admin.class.store');
     Route::put('/admin/class/{id}', [AdminClassController::class, 'update'])->name('admin.class.update');
+    Route::delete('/admin/class/{id}', [AdminClassController::class, 'destroy'])->name('admin.class.destroy');
 });
 
 require __DIR__.'/auth.php';
