@@ -20,21 +20,23 @@
                 </p>
 
                 {{-- Form Input --}}
-                <div class="flex flex-col gap-4 mt-6">
-                    <input type="email" class="w-full border border-gray-300 py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300" placeholder="Email">
-                    <input type="password" class="w-full border border-gray-300 py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300" placeholder="Password">
-                    <div class="flex items-center">
-                        <input id="link-checkbox" type="checkbox" value="" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                        <label for="link-checkbox" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Remember me.</label>
+                <form method="POST" action="{{ route('login') }}" class="flex flex-col gap-4 mt-6">
+                    @csrf
+                    <input name="email" type="email" value="{{ old('email') }}" class="w-full border border-gray-300 py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300" placeholder="Email" autocomplete="username">
+                    <input name="password" type="password" class="w-full border border-gray-300 py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300" placeholder="Password" autocomplete="current-password">
+                    <div class="w-full mt-4 text-center ">
+                        <button type="submit" class="w-full bg-[#F8CDCD] text-black py-2 px-6 rounded text-sm sm:text-base hover:shadow-lg transition">
+                            Login
+                        </button>
                     </div>
-                </div>
+                </form>
 
                 {{-- Tombol Register --}}
-                <div class="w-full mt-8 text-center ">
-                    <button class="w-full bg-[#F8CDCD] text-black py-2 px-6 rounded text-sm sm:text-base hover:shadow-lg transition" onclick="window.location.href='/about'">
-                        Login
-                    </button>
-                    <p class="mt-4"> <a href="/login" class="hover:underline">Forgot Password?</a></p>
+                <div class="w-full mt-2 text-center ">
+                    <a href="{{ route('register') }}" class="inline-block w-full mt-3 bg-white border border-gray-300 text-gray-700 py-2 px-6 rounded text-sm sm:text-base hover:shadow-lg transition text-center">
+                        Create account
+                    </a>
+                    <p class="mt-4"> <a href="{{ route('password.request') }}" class="hover:underline">Forgot Password?</a></p>
                 </div>
             </div>
 
