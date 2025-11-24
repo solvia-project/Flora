@@ -4,7 +4,7 @@
     </x-slot>
 
     <section class="min-h-screen flex items-center justify-center bg-center bg-cover px-4 sm:px-6 lg:px-8"
-             style="background-image: url('{{ asset('img/bg/class.png') }}');">
+        style="background-image: url('{{ asset('img/bg/class.png') }}');">
 
         <div
             x-data="{
@@ -20,6 +20,20 @@
                     { name: 'GoPay', img: '{{ asset('img/assets/gopay.png') }}' },
                     { name: 'Shopeepay', img: '{{ asset('img/assets/spay.png') }}' }
                 ],
+                times: [],
+                selectedTime: '{{ old('time') }}',
+                updateTimes() {
+                    const opt = $refs.userClass.selectedOptions[0];
+                    const t1 = opt ? opt.dataset.time1 || '' : '';
+                    const t2 = opt ? opt.dataset.time2 || '' : '';
+                    const arr = [];
+                    if (t1) arr.push(t1);
+                    if (t2) arr.push(t2);
+                    this.times = arr;
+                    if (!this.times.includes(this.selectedTime)) {
+                        this.selectedTime = this.times[0] || '';
+                    }
+                },
                 validateForm() {
                     const name = $refs.userName.value.trim();
                     const email = $refs.userEmail.value.trim();
@@ -42,26 +56,26 @@
             <form method="POST" action="{{ route('booking.store') }}" id="bookingForm" class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
                 @csrf
                 <input type="text" placeholder="Your Name" x-ref="userName" value="{{ Auth::user()->name ?? '' }}"
-                       class="w-full border border-gray-300 py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300">
+                    class="w-full border border-gray-300 py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300">
                 <input type="email" placeholder="Your Email" x-ref="userEmail" value="{{ Auth::user()->email ?? '' }}"
-                       class="w-full border border-gray-300 py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300">
+                    class="w-full border border-gray-300 py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300">
                 <input type="tel" placeholder="Your Phone" x-ref="userPhone" value="{{ Auth::user()->phone ?? '' }}"
-                       class="w-full border border-gray-300 py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300">
-                <select x-ref="userClass" name="class_id"
-                        class="w-full border border-gray-300 py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300">
+                    class="w-full border border-gray-300 py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300">
+                <select x-ref="userClass" name="class_id" @change="updateTimes()" x-init="updateTimes()"
+                    class="w-full border border-gray-300 py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300">
                     <option value="">Select Class</option>
                     @foreach(($classes ?? []) as $c)
-                        <option value="{{ $c->id }}" @selected(old('class_id') == $c->id)>{{ $c->name }} — IDR {{ number_format($c->price, 0, ',', '.') }}</option>
+                    <option value="{{ $c->id }}" @selected(old('class_id')==$c->id) data-time1="{{ $c->time_1 ? substr($c->time_1,0,5) : '' }}" data-time2="{{ $c->time_2 ? substr($c->time_2,0,5) : '' }}">{{ $c->name }} — IDR {{ number_format($c->price, 0, ',', '.') }}</option>
                     @endforeach
                 </select>
                 @error('class_id')
-                    <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
                 @enderror
 
                 <input type="date" x-ref="userDate" name="date" value="{{ old('date') }}"
-                       class="w-full border border-gray-300 py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300">
+                    class="w-full border border-gray-300 py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300">
                 @error('date')
-                    <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
                 @enderror
 
                 {{-- TIME PICKER --}}
@@ -71,23 +85,20 @@
                             <svg class="w-4 h-4 text-body" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                                 width="24" height="24" fill="none" viewBox="0 0 24 24">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                                    d="M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                             </svg>
                         </div>
 
-                        <input type="time"
-                            id="time"
-                            name="time"
-                            x-ref="userTime"
-                            min="09:00"
-                            max="18:00"
-                            value="{{ old('time', '09:00') }}"
-                            class="w-full border border-gray-300 py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300"
-                            required>
+                        <select id="time" name="time" x-model="selectedTime" :disabled="times.length === 0"
+                            class="w-full border border-gray-300 py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300" required>
+                            <template x-for="t in times" :key="t">
+                                <option :value="t" x-text="t"></option>
+                            </template>
+                        </select>
                     </div>
 
                     @error('time')
-                        <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                    <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
                     @enderror
                 </div>
 
@@ -96,21 +107,21 @@
             {{-- Book Now Button --}}
             <div class="mt-6 text-end">
                 <button type="submit" form="bookingForm"
-                        class="bg-pink-300 text-black py-2 px-6 rounded-lg hover:bg-pink-700 transition">
+                    class="bg-pink-300 text-black py-2 px-6 rounded-lg hover:bg-pink-700 transition">
                     Book Now
                 </button>
             </div>
 
             {{-- Payment Modal --}}
             <div x-show="open" x-cloak
-                 class="fixed inset-0 z-50 bg-black/20 backdrop-blur-sm overflow-y-auto p-4 flex items-center justify-center">
+                class="fixed inset-0 z-50 bg-black/20 backdrop-blur-sm overflow-y-auto p-4 flex items-center justify-center">
 
                 <div class="bg-white rounded-lg w-full max-w-3xl p-6 relative shadow-lg max-h-[85vh] overflow-y-auto">
                     <p class="my-5 cursor-pointer" @click="modalStep='payment'; showSuccess=false">&leftarrow; Purchase Arrangement</p>
 
                     {{-- Close --}}
                     <button @click="open = false"
-                            class="absolute top-2 right-2 sm:top-4 sm:right-4 text-gray-500 hover:text-gray-700 text-xl sm:text-2xl">
+                        class="absolute top-2 right-2 sm:top-4 sm:right-4 text-gray-500 hover:text-gray-700 text-xl sm:text-2xl">
                         &times;
                     </button>
 
@@ -219,7 +230,7 @@
 
                             {{-- Success Message --}}
                             <div x-show="showSuccess"
-                                 class="mb-4 p-2 bg-green-50 border border-green-200 text-black font-semibold rounded text-center text-sm sm:text-base">
+                                class="mb-4 p-2 bg-green-50 border border-green-200 text-black font-semibold rounded text-center text-sm sm:text-base">
                                 Successful Payment!
                             </div>
 
@@ -230,13 +241,13 @@
                                 <input type="hidden" name="payment_method" :value="paymentMethod">
                             </form>
                             <button x-show="!showSuccess" type="submit" form="paymentForm"
-                                    class="w-full bg-pink-200 text-black py-2 px-6 rounded-lg hover:bg-pink-300 transition">
+                                class="w-full bg-pink-200 text-black py-2 px-6 rounded-lg hover:bg-pink-300 transition">
                                 Pay Now
                             </button>
 
                             {{-- See Invoice --}}
                             <button x-show="showSuccess" @click.prevent="modalStep='invoice'"
-                                    class="w-full mt-2 bg-pink-200 text-black py-2 px-6 rounded-lg hover:bg-pink-300 transition text-sm sm:text-base">
+                                class="w-full mt-2 bg-pink-200 text-black py-2 px-6 rounded-lg hover:bg-pink-300 transition text-sm sm:text-base">
                                 See Invoice
                             </button>
                         </div>
@@ -288,7 +299,9 @@
 
                             <div class="flex justify-between">
                                 <p><strong>{{ optional(optional($invoiceBooking)->class)->name ?? '' }}</strong></p>
-                                <div><p>{{ isset($invoiceBooking) ? number_format(optional($invoiceBooking->class)->price ?? 0, 0, ',', '.') : '' }}</p></div>
+                                <div>
+                                    <p>{{ isset($invoiceBooking) ? number_format(optional($invoiceBooking->class)->price ?? 0, 0, ',', '.') : '' }}</p>
+                                </div>
                             </div>
 
                             <div class="flex justify-end bg-indigo-50 p-4 gap-4">

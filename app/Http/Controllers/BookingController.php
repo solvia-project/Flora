@@ -30,6 +30,15 @@ class BookingController extends Controller
             'time' => ['required', 'date_format:H:i'],
         ]);
 
+        $class = WorkshopClass::find((int) $request->class_id);
+        $allowedTimes = array_values(array_filter([
+            $class && $class->time_1 ? substr((string) $class->time_1, 0, 5) : null,
+            $class && $class->time_2 ? substr((string) $class->time_2, 0, 5) : null,
+        ]));
+        if (!in_array($request->time, $allowedTimes, true)) {
+            return back()->withInput()->withErrors(['time' => 'Time is not available for the selected class']);
+        }
+
         $bookingDate = Carbon::parse($request->date.' '.$request->time);
 
         $booking = Booking::create([

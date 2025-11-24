@@ -19,6 +19,10 @@ class StoreClassRequest extends FormRequest
             'location' => ['required', 'string', 'max:255'],
             'starts_at' => ['required', 'date'],
             'duration_minutes' => ['required', 'integer', 'min:1'],
+            'max' => ['nullable', 'integer', 'min:1'],
+            'day' => ['nullable', 'string', 'in:Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday'],
+            'time_1' => ['nullable', 'date_format:H:i'],
+            'time_2' => ['nullable', 'date_format:H:i'],
             'image' => ['nullable', 'image', 'max:2048'],
             'description' => ['nullable', 'string'],
         ];

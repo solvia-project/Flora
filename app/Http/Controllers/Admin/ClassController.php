@@ -26,6 +26,12 @@ class ClassController extends Controller
         return view('admin.edit-class', compact('class'));
     }
 
+    public function create()
+    {
+        $class = null;
+        return view('admin.add-class', compact('class'));
+    }
+
     public function store(StoreClassRequest $request): RedirectResponse
     {
         $data = $request->validated();

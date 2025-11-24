@@ -19,6 +19,10 @@ class UpdateClassRequest extends FormRequest
             'location' => ['sometimes', 'required', 'string', 'max:255'],
             'starts_at' => ['sometimes', 'required', 'date'],
             'duration_minutes' => ['sometimes', 'required', 'integer', 'min:1'],
+            'max' => ['sometimes', 'nullable', 'integer', 'min:1'],
+            'day' => ['sometimes', 'nullable', 'string', 'in:Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday'],
+            'time_1' => ['sometimes', 'nullable', 'date_format:H:i'],
+            'time_2' => ['sometimes', 'nullable', 'date_format:H:i'],
             'image' => ['nullable', 'image', 'max:2048'],
             'description' => ['nullable', 'string'],
         ];

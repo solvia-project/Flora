@@ -19,6 +19,10 @@ class WorkshopClass extends Model
         'location',
         'starts_at',
         'duration_minutes',
+        'max',
+        'day',
+        'time_1',
+        'time_2',
         'image_path',
     ];
 
