@@ -40,6 +40,7 @@
                                     <p>Duration : {{ $c->duration_minutes }} Hours</p>
                                     <p>Starts : {{ optional($c->starts_at)->format('l, d M Y H:i') }}</p>
                                     <p>Location : {{ $c->location }}</p>
+                                    <p>Class Slot : {{ rand(0,10) }}/{{ rand(10,15) }}</p>
                                 </div>
                             </div>
                         </div>
