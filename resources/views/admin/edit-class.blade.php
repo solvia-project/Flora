@@ -114,41 +114,35 @@
         <div class="row g-4 mt-2">
 
             <!-- Select Day -->
-            <div class="col-md-4">
-                <label class="form-label d-block">Select Day</label>
+            <div class="col-md-4 position-relative">
+        <label class="form-label">Select Days</label>
 
-                <button id="dropdownRadioBgHoverButton" data-dropdown-toggle="dropdownRadioBgHover"
-                    class="inline-flex items-center justify-center text-white bg-brand border border-transparent
-                           hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium
-                           rounded-md text-sm px-4 py-2.5 w-100" type="button">
-                    {{ old('day', $class->day ?? 'Select Day') }}
-                    <svg class="w-4 h-4 ms-1.5 -me-0.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                         viewBox="0 0 24 24" fill="none" width="24" height="24">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                              stroke-width="2" d="m19 9-7 7-7-7"/>
-                    </svg>
-                </button>
+        <div x-data="daySelector()" class="w-full">
 
-                <!-- Dropdown Menu -->
-                <div id="dropdownRadioBgHover"
-                     class="z-10 hidden bg-white border rounded-md shadow-lg w-44 mt-1">
+            <!-- Button -->
+            <button type="button"
+                @click="open = !open"
+                class="form-control text-left d-flex justify-content-between align-items-center">
+                <span x-text="buttonText()"></span>
+                <i class="fa fa-chevron-down text-muted"></i>
+            </button>
 
-                    <ul class="p-2 text-sm">
+            <!-- Dropdown -->
+            <div x-show="open"
+                @click.outside="open = false"
+                class="position-absolute bg-white border rounded shadow p-3 w-100 mt-1"
+                style="z-index: 100; max-height: 200px; overflow-y: auto;">
 
-                        @foreach(['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'] as $day)
-                        <li>
-                            <label class="inline-flex items-center w-full p-2 hover:bg-gray-100 rounded cursor-pointer">
-                                <input type="radio" name="day" value="{{ $day }}"
-                                       {{ old('day', $class->day ?? '') == $day ? 'checked' : '' }}
-                                       class="w-4 h-4 rounded-full border-gray-400">
-                                <span class="ms-2">{{ $day }}</span>
-                            </label>
-                        </li>
-                        @endforeach
+                <template x-for="day in days" :key="day.value">
+                    <label class="d-flex align-items-center gap-2 mb-1">
+                        <input type="checkbox" :value="day.value" x-model="selectedDays" name="day[]">
+                        <span x-text="day.label"></span>
+                    </label>
+                </template>
 
-                    </ul>
-                </div>
             </div>
+        </div>
+    </div>
 
 
 <!-- Time 1 -->
@@ -234,3 +228,40 @@
       </div>
     </div>
 </x-admin-app>
+
+<script>
+    function daySelector() {
+        return {
+            open: false,
+            selectedDays: [],
+
+            days: [
+                { value: 'monday', label: 'Monday' },
+                { value: 'tuesday', label: 'Tuesday' },
+                { value: 'wednesday', label: 'Wednesday' },
+                { value: 'thursday', label: 'Thursday' },
+                { value: 'friday', label: 'Friday' },
+                { value: 'saturday', label: 'Saturday' },
+                { value: 'sunday', label: 'Sunday' },
+            ],
+
+            buttonText() {
+                if (this.selectedDays.length === 0) {
+                    return 'Select Days';
+                }
+
+                // Ambil label (Monday, etc.)
+                let selectedLabels = this.days
+                    .filter(d => this.selectedDays.includes(d.value))
+                    .map(d => d.label);
+
+                // Jika lebih dari 3, tampilkan jumlah
+                if (selectedLabels.length > 3) {
+                    return `${selectedLabels.length} days selected`;
+                }
+
+                return selectedLabels.join(', ');
+            }
+        };
+    }
+</script>
