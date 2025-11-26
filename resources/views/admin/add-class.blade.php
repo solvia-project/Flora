@@ -108,72 +108,73 @@
                        value="{{ old('location', $class->location ?? '') }}">
             </div>
 
-
         </div>
 
         <!-- GRID UNTUK DAY + START TIME + END TIME -->
-        <div class="row g-4 mt-2">
+        <!-- GRID UNTUK DAY + START TIME + END TIME -->
+<div class="row g-4 mt-2">
 
-            <!-- Select Day -->
-            <div x-data="daySelector()" class="relative w-full">
+    <!-- Select Days -->
+    <div class="col-md-4 position-relative">
+        <label class="form-label">Select Days</label>
 
-    <!-- Button -->
-    <button type="button"
-        @click="open = !open"
-        class="w-full border border-gray-300 py-2 px-3 rounded-lg text-left">
-        <span x-text="buttonText()"></span>
-    </button>
+        <div x-data="daySelector()" class="w-full">
 
-    <!-- Dropdown -->
-    <div x-show="open"
-         @click.outside="open = false"
-         class="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-lg shadow">
+            <!-- Button -->
+            <button type="button"
+                @click="open = !open"
+                class="form-control text-left d-flex justify-content-between align-items-center">
+                <span x-text="buttonText()"></span>
+                <i class="fa fa-chevron-down text-muted"></i>
+            </button>
 
-        <div class="p-3 flex flex-col gap-2 max-h-40 overflow-y-auto">
+            <!-- Dropdown -->
+            <div x-show="open"
+                @click.outside="open = false"
+                class="position-absolute bg-white border rounded shadow p-3 w-100 mt-1"
+                style="z-index: 100; max-height: 200px; overflow-y: auto;">
 
-            <template x-for="day in days" :key="day.value">
-                <label class="flex items-center gap-2">
-                    <input type="checkbox" :value="day.value" x-model="selectedDays" name="day[]">
-                    <span x-text="day.label"></span>
-                </label>
-            </template>
+                <template x-for="day in days" :key="day.value">
+                    <label class="d-flex align-items-center gap-2 mb-1">
+                        <input type="checkbox" :value="day.value" x-model="selectedDays" name="day[]">
+                        <span x-text="day.label"></span>
+                    </label>
+                </template>
 
+            </div>
         </div>
     </div>
-</div>
+
+    <!-- Time 1 -->
+    <div class="col-md-4">
+        <label for="time_1" class="form-label">Time 1</label>
+        <input
+            type="time"
+            id="time_1"
+            name="time_1"
+            class="form-control"
+            min="09:00"
+            max="18:00"
+            required
+        />
+    </div>
+
+    <!-- Time 2 -->
+    <div class="col-md-4">
+        <label for="time_2" class="form-label">Time 2</label>
+        <input
+            type="time"
+            id="time_2"
+            name="time_2"
+            class="form-control"
+            min="09:00"
+            max="18:00"
+            required
+        />
+    </div>
 
 </div>
 
-
-        <!-- Time 1 -->
-        <div class="col-md-4 relative">
-            <label for="time_1" class="block mb-1 text-sm font-medium text-heading">Time 1</label>
-            <input
-                type="time"
-                id="time_1"
-                name="time_1"
-                class="block w-full p-2.5 pr-10 bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-md focus:ring-brand focus:border-brand shadow-xs"
-                min="09:00"
-                max="18:00"
-                required
-            />
-        </div>
-
-        <!-- Time 2 -->
-        <div class="col-md-4 relative">
-            <label for="time_2" class="block mb-1 text-sm font-medium text-heading">Time 2</label>
-            <input
-                type="time"
-                id="time_2"
-                name="time_2"
-                class="block w-full p-2.5 pr-10 bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-md focus:ring-brand focus:border-brand shadow-xs"
-                min="09:00"
-                max="18:00"
-                required
-            />
-        </div>
-
-        </div>
 
         <!-- GRID 2 KOLOM -->
         <div class="row g-4 mt-2">
