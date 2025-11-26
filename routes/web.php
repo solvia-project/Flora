@@ -25,10 +25,11 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/booking', [AdminBookingController::class, 'index'])->name('admin.booking.index');
     Route::get('/admin/user', [AdminUserController::class, 'index'])->name('admin.user.index');
     Route::get('/admin/class', [AdminClassController::class, 'index'])->name('admin.class.index');
+    Route::get('/admin/addclass', [AdminClassController::class, 'create'])->name('admin.class.create');
     Route::get('/admin/editclass', [AdminClassController::class, 'edit'])->name('admin.class.edit');
     Route::post('/admin/class', [AdminClassController::class, 'store'])->name('admin.class.store');
     Route::put('/admin/class/{id}', [AdminClassController::class, 'update'])->name('admin.class.update');
     Route::delete('/admin/class/{id}', [AdminClassController::class, 'destroy'])->name('admin.class.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
