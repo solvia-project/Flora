@@ -71,6 +71,7 @@
                 @error('class_id')
                 <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
                 @enderror
+                {{-- select day --}}
                 <select name="day" class="w-full border border-gray-300 py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300">
                     <option value="">Select Day</option>
                     <option value="monday">Monday</option>
