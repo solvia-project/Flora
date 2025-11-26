@@ -106,13 +106,17 @@
                             <td>{{ Str::limit($c->description, 120) }}</td>
                             <td>{{ $c->updated_at->format('d-m-Y H:i') }}</td>
                             <td>
-                              <div class="btn-group" role="group" aria-label="Actions">
-                                <a class="btn btn-warning btn-sm" href="{{ route('admin.class.edit', ['id' => $c->id]) }}">Edit</a>
-                                <form method="POST" action="{{ route('admin.class.destroy', $c->id) }}" onsubmit="return confirm('Delete this class?')">
-                                  @csrf
-                                  @method('DELETE')
-                                  <button class="btn btn-danger btn-sm" type="submit">Delete</button>
-                                </form>
+                              <div class="btn-group gap-2" role="group" aria-label="Actions">
+                                <div>
+                                    <a class="btn btn-warning btn-sm" href="{{ route('admin.class.edit', ['id' => $c->id]) }}">Edit</a>
+                                </div>
+                                <div>
+                                    <form method="POST" action="{{ route('admin.class.destroy', $c->id) }}" onsubmit="return confirm('Delete this class?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="btn btn-danger btn-sm" type="submit">Delete</button>
+                                    </form>
+                                </div>
                               </div>
                             </td>
                           </tr>
