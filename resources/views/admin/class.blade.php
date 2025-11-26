@@ -76,6 +76,7 @@
                             <th>ID</th>
                             <th>Image Product</th>
                             <th>Class Name</th>
+                            <th>Slot</th>
                             <th>Price</th>
                             <th>Location</th>
                             <th>Date & Time</th>
@@ -97,6 +98,7 @@
                               @endif
                             </td>
                             <td>{{ $c->name }}</td>
+                            <td>{{ rand(0,10)}}</td>
                             <td>Rp{{ number_format($c->price, 0, ',', '.') }}</td>
                             <td>{{ $c->location }}</td>
                             <td>{{ optional($c->starts_at)->format('d-m-Y H:i') }}</td>
