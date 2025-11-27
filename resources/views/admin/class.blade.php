@@ -52,6 +52,9 @@
           </div>
           <!-- Container-fluid starts-->
           <div class="container-fluid">
+            @if(session('success'))
+              <div class="alert alert-success" role="alert">{{ session('success') }}</div>
+            @endif
             <div class="row">
               <div class="col-md-3 col-lg-2 mb-3">
                 <div class="card">

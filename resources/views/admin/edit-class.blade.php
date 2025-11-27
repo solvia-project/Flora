@@ -1,4 +1,5 @@
 <x-admin-app>
+
   <body>
     <!-- page-wrapper Start-->
     <div class="page-wrapper" id="pageWrapper">
@@ -46,11 +47,11 @@
               <div class="col-md-3 col-lg-2 mb-3">
                 <div class="card">
                   <div class="card-body p-0">
-                      <ul class="list-group list-group-flush">
-                        <a href="{{ route('admin.booking.index') }}" class="list-group-item list-group-item-action {{ request()->routeIs('admin.booking.index') ? 'active' : '' }}">Booking</a>
-                        <a href="{{ route('admin.user.index') }}" class="list-group-item list-group-item-action {{ request()->routeIs('admin.user.index') ? 'active' : '' }}">Users</a>
-                        <a href="{{ route('admin.class.index') }}" class="list-group-item list-group-item-action {{ request()->routeIs('admin.class.index') ? 'active' : '' }}">Classes</a>
-                      </ul>
+                    <ul class="list-group list-group-flush">
+                      <a href="{{ route('admin.booking.index') }}" class="list-group-item list-group-item-action {{ request()->routeIs('admin.booking.index') ? 'active' : '' }}">Booking</a>
+                      <a href="{{ route('admin.user.index') }}" class="list-group-item list-group-item-action {{ request()->routeIs('admin.user.index') ? 'active' : '' }}">Users</a>
+                      <a href="{{ route('admin.class.index') }}" class="list-group-item list-group-item-action {{ request()->routeIs('admin.class.index') ? 'active' : '' }}">Classes</a>
+                    </ul>
                   </div>
                 </div>
               </div>
@@ -59,209 +60,257 @@
                   <div class="row">
                     <div class="col-xl-12">
                       <form class="card" method="POST"
-      action="{{ isset($class) ? route('admin.class.update', $class->id) : route('admin.class.store') }}"
-      enctype="multipart/form-data">
+                        action="{{ isset($class) ? route('admin.class.update', $class->id) : route('admin.class.store') }}"
+                        enctype="multipart/form-data">
 
-    @csrf
-    @if(isset($class))
-        @method('PUT')
-    @endif
+                        @csrf
+                        @if(isset($class))
+                        @method('PUT')
+                        @endif
 
-    <div class="card-header pb-0">
-        <h4 class="card-title mb-0">Edit Class</h4>
-        <div class="card-options">
-            <a class="card-options-collapse" href="#" data-bs-toggle="card-collapse"><i class="fe fe-chevron-up"></i></a>
-            <a class="card-options-remove" href="#" data-bs-toggle="card-remove"><i class="fe fe-x"></i></a>
-        </div>
-    </div>
+                        <div class="card-header pb-0">
+                          <h4 class="card-title mb-0">Edit Class</h4>
+                          <div class="card-options">
+                            <a class="card-options-collapse" href="#" data-bs-toggle="card-collapse"><i class="fe fe-chevron-up"></i></a>
+                            <a class="card-options-remove" href="#" data-bs-toggle="card-remove"><i class="fe fe-x"></i></a>
+                          </div>
+                        </div>
 
-    <div class="card-body">
+                        <div class="card-body">
 
-        <!-- GRID 4 KOLOM -->
-        <div class="row g-4">
+                          @if(session('error'))
+                          <div class="alert alert-danger" role="alert">{{ session('error') }}</div>
+                          @endif
+                          @if($errors->any())
+                          <div class="alert alert-warning" role="alert">
+                            <ul class="mb-0">
+                              @foreach($errors->all() as $error)
+                              <li>{{ $error }}</li>
+                              @endforeach
+                            </ul>
+                          </div>
+                          @endif
 
-            <!-- Class Name -->
-            <div class="col-md-3">
-                <label class="form-label">Class Name</label>
-                <input class="form-control" name="name" type="text" placeholder="Class"
-                       value="{{ old('name', $class->name ?? '') }}">
-            </div>
+                          <!-- GRID 4 KOLOM -->
+                          <div class="row g-4">
 
-            <!-- Max Person -->
-            <div class="col-md-3">
-                <label class="form-label">Max Person</label>
-                <input class="form-control" name="max" type="number" step="1" placeholder="Max Person"
-                       value="{{ old('max', $class->max ?? '') }}">
-            </div>
+                            <!-- Class Name -->
+                            <div class="col-md-3">
+                              <label class="form-label">Class Name</label>
+                              <input class="form-control" name="name" type="text" placeholder="Class"
+                                value="{{ old('name', $class->name ?? '') }}">
+                            </div>
 
-            <!-- Price -->
-            <div class="col-md-3">
-                <label class="form-label">Price (Rupiah)</label>
-                <input class="form-control" name="price" type="number" step="0.01"
-                       placeholder="Rupiah" value="{{ old('price', $class->price ?? '') }}">
-            </div>
+                            <!-- Max Person -->
+                            <div class="col-md-3">
+                              <label class="form-label">Max Person</label>
+                              <input class="form-control" name="max" type="number" step="1" placeholder="Max Person"
+                                value="{{ old('max', $class->max ?? '') }}">
+                            </div>
 
-            <!-- Location -->
-            <div class="col-md-3">
-                <label class="form-label">Location</label>
-                <input class="form-control" name="location" type="text" placeholder="Location"
-                       value="{{ old('location', $class->location ?? '') }}">
-            </div>
+                            <!-- Price -->
+                            <div class="col-md-3">
+                              <label class="form-label">Price (Rupiah)</label>
+                              <input class="form-control" name="price" type="number" step="0.01"
+                                placeholder="Rupiah" value="{{ old('price', $class->price ?? '') }}">
+                            </div>
 
-        </div>
+                            <!-- Location -->
+                            <div class="col-md-3">
+                              <label class="form-label">Location</label>
+                              <input class="form-control" name="location" type="text" placeholder="Location"
+                                value="{{ old('location', $class->location ?? '') }}">
+                            </div>
 
-        <!-- GRID UNTUK DAY + START TIME + END TIME -->
-        <div class="row g-4 mt-2">
+                          </div>
 
-            <!-- Select Day -->
-            <div class="col-md-4 position-relative">
-        <label class="form-label">Select Days</label>
+                          <!-- GRID UNTUK DAY + START TIME + END TIME -->
+                          <div class="row g-4 mt-2">
 
-        <div x-data="daySelector()" class="w-full">
+                            <!-- Select Day -->
+                            <div class="col-md-4 position-relative">
+                              <label class="form-label">Select Days</label>
 
-            <!-- Button -->
-            <button type="button"
-                @click="open = !open"
-                class="form-control text-left d-flex justify-content-between align-items-center">
-                <span x-text="buttonText()"></span>
-                <i class="fa fa-chevron-down text-muted"></i>
-            </button>
+                              @php
+                              $initialDays = old('day', []);
+                              if (empty($initialDays) && isset($class) && $class->day) {
+                              $value = (string) $class->day;
+                              if (ctype_digit($value)) {
+                              $names = ['monday','tuesday','wednesday','thursday','friday','saturday','sunday'];
+                              $mask = (int) $value;
+                              $initialDays = [];
+                              foreach ($names as $i => $n) {
+                              if ($mask & (1 << $i)) { $initialDays[]=$n; }
+                                }
+                                } else {
+                                $initialDays=array_filter(array_map('trim', explode(',', $value)));
+                                }
+                                }
+                                $initialDays=array_map('strtolower', $initialDays);
+                                @endphp
+                                <div x-data='daySelector(@json($initialDays))' class="w-full">
 
-            <!-- Dropdown -->
-            <div x-show="open"
-                @click.outside="open = false"
-                class="position-absolute bg-white border rounded shadow p-3 w-100 mt-1"
-                style="z-index: 100; max-height: 200px; overflow-y: auto;">
+                                <!-- Button -->
+                                <button type="button"
+                                  @click="open = !open"
+                                  class="form-control text-left d-flex justify-content-between align-items-center">
+                                  <span x-text="buttonText()">Select Days</span>
+                                  <i class="fa fa-chevron-down text-muted"></i>
+                                </button>
 
-                <template x-for="day in days" :key="day.value">
-                    <label class="d-flex align-items-center gap-2 mb-1">
-                        <input type="checkbox" :value="day.value" x-model="selectedDays" name="day[]">
-                        <span x-text="day.label"></span>
-                    </label>
-                </template>
+                                <!-- Dropdown -->
+                                <div x-show="open"
+                                  @click.outside="open = false"
+                                  class="position-absolute bg-white border rounded shadow p-3 w-100 mt-1"
+                                  style="display: none; z-index: 100; max-height: 200px; overflow-y: auto;">
 
-            </div>
-        </div>
-    </div>
+                                  <template x-for="day in days" :key="day.value">
+                                    <label class="d-flex align-items-center gap-2 mb-1">
+                                      <input type="checkbox" :value="day.value" x-model="selectedDays" name="day[]">
+                                      <span x-text="day.label"></span>
+                                    </label>
+                                  </template>
+
+                                </div>
+                            </div>
+                          </div>
 
 
-<!-- Time 1 -->
-<div class="col-md-4 relative">
-    <label for="time_1" class="block mb-1 text-sm font-medium text-heading">Time 1</label>
-    <input
-        type="time"
-        id="time_1"
-        name="time_1"
-        class="block w-full p-2.5 pr-10 bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-md focus:ring-brand focus:border-brand shadow-xs"
-        min="09:00"
-        max="18:00"
-        required
-    />
-</div>
+                          <!-- Time 1 -->
+                          <div class="col-md-4 relative">
+                            <label for="time_1" class="block mb-1 text-sm font-medium text-heading">Time 1</label>
+                            <input
+                              type="time"
+                              id="time_1"
+                              name="time_1"
+                              class="block w-full p-2.5 pr-10 bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-md focus:ring-brand focus:border-brand shadow-xs"
+                              min="09:00"
+                              max="18:00"
+                              value="{{ old('time_1', isset($class) && $class->time_1 ? substr($class->time_1, 0, 5) : '') }}"
+                              required />
+                          </div>
 
-<!-- Time 2 -->
-<div class="col-md-4 relative">
-    <label for="time_2" class="block mb-1 text-sm font-medium text-heading">Time 2</label>
-    <input
-        type="time"
-        id="time_2"
-        name="time_2"
-        class="block w-full p-2.5 pr-10 bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-md focus:ring-brand focus:border-brand shadow-xs"
-        min="09:00"
-        max="18:00"
-        required
-    />
-</div>
+                          <!-- Time 2 -->
+                          <div class="col-md-4 relative">
+                            <label for="time_2" class="block mb-1 text-sm font-medium text-heading">Time 2</label>
+                            <input
+                              type="time"
+                              id="time_2"
+                              name="time_2"
+                              class="block w-full p-2.5 pr-10 bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-md focus:ring-brand focus:border-brand shadow-xs"
+                              min="09:00"
+                              max="18:00"
+                              value="{{ old('time_2', isset($class) && $class->time_2 ? substr($class->time_2, 0, 5) : '') }}"
+                              required />
+                          </div>
 
-        </div>
+                        </div>
 
-        <!-- GRID 2 KOLOM -->
-        <div class="row g-4 mt-2">
+                        <!-- GRID 2 KOLOM -->
+                        <div class="row g-4 mt-2">
 
-            <!-- Duration -->
-            <div class="col-md-6">
-                <label class="form-label">Duration (Minutes)</label>
-                <input class="form-control" name="duration_minutes"
-                       type="number" min="1" placeholder="Minutes"
-                       value="{{ old('duration_minutes', $class->duration_minutes ?? '') }}">
-            </div>
+                          <!-- Duration -->
+                          <div class="col-md-6">
+                            <label class="form-label">Duration (Minutes)</label>
+                            <input class="form-control" name="duration_minutes"
+                              type="number" min="1" placeholder="Minutes"
+                              value="{{ old('duration_minutes', $class->duration_minutes ?? '') }}">
+                          </div>
 
-            <!-- Image -->
-            <div class="col-md-6">
-                <label class="form-label">Image Product</label>
-                <input class="form-control" name="image" type="file" accept="image/*">
+                          <!-- Image -->
+                          <div class="col-md-6">
+                            <label class="form-label">Image Product</label>
+                            <input class="form-control" name="image" type="file" accept="image/*">
 
-                @if(isset($class) && $class->image_path)
-                    <div class="mt-2">
-                        <img src="{{ asset('storage/'.$class->image_path) }}" class="img-thumbnail"
-                             style="width:160px;height:160px;object-fit:cover;">
-                        <small class="text-muted">Current image preview</small>
+                            @if(isset($class) && $class->image_path)
+                            <div class="mt-2">
+                              <img src="{{ asset('storage/'.$class->image_path) }}" class="img-thumbnail"
+                                style="width:160px;height:160px;object-fit:cover;">
+                              <small class="text-muted">Current image preview</small>
+                            </div>
+                            @endif
+                          </div>
+
+                        </div>
+
+                        <!-- DESCRIPTION FULL WIDTH -->
+                        <div class="mt-3">
+                          <label class="form-label">Description</label>
+                          <textarea class="form-control" name="description" rows="5"
+                            placeholder="Enter description">{{ old('description', $class->description ?? '') }}</textarea>
+                        </div>
+
                     </div>
-                @endif
-            </div>
 
-        </div>
-
-        <!-- DESCRIPTION FULL WIDTH -->
-        <div class="mt-3">
-            <label class="form-label">Description</label>
-            <textarea class="form-control" name="description" rows="5"
-                      placeholder="Enter description">{{ old('description', $class->description ?? '') }}</textarea>
-        </div>
-
-    </div>
-
-    <div class="card-footer text-end">
-        <button class="btn btn-primary px-4" type="submit">Save</button>
-    </div>
-</form>
+                    <div class="card-footer text-end">
+                      <button class="btn btn-primary px-4" type="submit">Save</button>
                     </div>
+                    </form>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          <!-- Container-fluid Ends-->
         </div>
-        <!-- footer start-->
-
+        <!-- Container-fluid Ends-->
       </div>
+      <!-- footer start-->
+
+    </div>
     </div>
 </x-admin-app>
 
 <script>
-    function daySelector() {
-        return {
-            open: false,
-            selectedDays: [],
+  function daySelector(initial = []) {
+    return {
+      open: false,
+      selectedDays: initial,
 
-            days: [
-                { value: 'monday', label: 'Monday' },
-                { value: 'tuesday', label: 'Tuesday' },
-                { value: 'wednesday', label: 'Wednesday' },
-                { value: 'thursday', label: 'Thursday' },
-                { value: 'friday', label: 'Friday' },
-                { value: 'saturday', label: 'Saturday' },
-                { value: 'sunday', label: 'Sunday' },
-            ],
+      days: [{
+          value: 'monday',
+          label: 'Monday'
+        },
+        {
+          value: 'tuesday',
+          label: 'Tuesday'
+        },
+        {
+          value: 'wednesday',
+          label: 'Wednesday'
+        },
+        {
+          value: 'thursday',
+          label: 'Thursday'
+        },
+        {
+          value: 'friday',
+          label: 'Friday'
+        },
+        {
+          value: 'saturday',
+          label: 'Saturday'
+        },
+        {
+          value: 'sunday',
+          label: 'Sunday'
+        },
+      ],
 
-            buttonText() {
-                if (this.selectedDays.length === 0) {
-                    return 'Select Days';
-                }
+      buttonText() {
+        if (this.selectedDays.length === 0) {
+          return 'Select Days';
+        }
 
-                // Ambil label (Monday, etc.)
-                let selectedLabels = this.days
-                    .filter(d => this.selectedDays.includes(d.value))
-                    .map(d => d.label);
+        let selectedLabels = this.days
+          .filter(d => this.selectedDays.includes(d.value))
+          .map(d => d.label);
 
-                // Jika lebih dari 3, tampilkan jumlah
-                if (selectedLabels.length > 3) {
-                    return `${selectedLabels.length} days selected`;
-                }
+        if (selectedLabels.length > 3) {
+          return `${selectedLabels.length} days selected`;
+        }
 
-                return selectedLabels.join(', ');
-            }
-        };
-    }
+        return selectedLabels.join(', ');
+      }
+    };
+  }
 </script>

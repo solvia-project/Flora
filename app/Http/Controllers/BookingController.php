@@ -27,6 +27,7 @@ class BookingController extends Controller
         $request->validate([
             'class_id' => ['required', 'exists:classes,id'],
             'date' => ['required', 'date'],
+            'day' => ['required', 'string', 'in:monday,tuesday,wednesday,thursday,friday,saturday,sunday'],
             'time' => ['required', 'date_format:H:i'],
         ]);
 
@@ -35,11 +36,32 @@ class BookingController extends Controller
             $class && $class->time_1 ? substr((string) $class->time_1, 0, 5) : null,
             $class && $class->time_2 ? substr((string) $class->time_2, 0, 5) : null,
         ]));
+        // Allowed days from class
+        $allowedDays = [];
+        if ($class && $class->day) {
+            $value = (string) $class->day;
+            if (ctype_digit($value)) {
+                $names = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+                $mask = (int) $value;
+                foreach ($names as $i => $n) {
+                    if ($mask & (1 << $i)) {
+                        $allowedDays[] = $n;
+                    }
+                }
+            } else {
+                $allowedDays = array_values(array_filter(array_map(function ($d) {
+                    return strtolower(trim((string) $d));
+                }, explode(',', $value))));
+            }
+        }
+        if ($allowedDays && !in_array(strtolower((string) $request->day), $allowedDays, true)) {
+            return back()->withInput()->withErrors(['day' => 'Day is not available for the selected class']);
+        }
         if (!in_array($request->time, $allowedTimes, true)) {
             return back()->withInput()->withErrors(['time' => 'Time is not available for the selected class']);
         }
 
-        $bookingDate = Carbon::parse($request->date.' '.$request->time);
+        $bookingDate = Carbon::parse($request->date . ' ' . $request->time);
 
         $booking = Booking::create([
             'user_id' => Auth::id(),
@@ -48,8 +70,27 @@ class BookingController extends Controller
             'status' => 'pending',
         ]);
 
-        $booking->invoice_no = 'INV-'.now()->format('Ymd').'-'.str_pad((string) $booking->id, 6, '0', STR_PAD_LEFT);
+        $booking->invoice_no = 'INV-' . now()->format('Ymd') . '-' . str_pad((string) $booking->id, 6, '0', STR_PAD_LEFT);
         $booking->save();
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'id' => $booking->id,
+                'invoice_no' => $booking->invoice_no,
+                'booking_date' => $bookingDate->format('Y-m-d H:i'),
+                'class' => [
+                    'id' => $class->id,
+                    'name' => (string) $class->name,
+                    'price' => (int) $class->price,
+                    'location' => (string) ($class->location ?? ''),
+                ],
+                'user' => [
+                    'name' => (string) (Auth::user()->name ?? ''),
+                    'email' => (string) (Auth::user()->email ?? ''),
+                    'phone' => (string) (Auth::user()->phone ?? ''),
+                ],
+            ]);
+        }
 
         return redirect()->route('booking.index')->with(['invoice_booking_id' => $booking->id, 'modal_step' => 'payment']);
     }
@@ -67,6 +108,7 @@ class BookingController extends Controller
         }
 
         $booking->status = 'paid';
+        $booking->payment_method = (string) $request->payment_method;
         $booking->save();
 
         return redirect()->route('booking.index')->with(['invoice_booking_id' => $booking->id, 'modal_step' => 'invoice']);
