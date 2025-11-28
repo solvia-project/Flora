@@ -211,9 +211,9 @@
 
                           <!-- Duration -->
                           <div class="col-md-6">
-                            <label class="form-label">Duration (Minutes)</label>
+                            <label class="form-label">Duration (Hours)</label>
                             <input class="form-control" name="duration_minutes"
-                              type="number" min="1" placeholder="Minutes"
+                              type="number" min="1" placeholder="Hours"
                               value="{{ old('duration_minutes', $class->duration_minutes ?? '') }}">
                           </div>
 
