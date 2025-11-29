@@ -12,7 +12,12 @@ class BookingController extends Controller
 {
     public function index()
     {
-        $classes = WorkshopClass::orderBy('starts_at')->get();
+        $classes = WorkshopClass::withCount('bookings')
+            ->orderBy('starts_at')
+            ->get()
+            ->filter(function ($c) {
+                return $c->max === null || $c->bookings_count < $c->max;
+            });
         $invoiceBooking = null;
         $id = session('invoice_booking_id');
         if ($id) {

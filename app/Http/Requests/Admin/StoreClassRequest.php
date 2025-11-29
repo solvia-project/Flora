@@ -17,7 +17,7 @@ class StoreClassRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'price' => ['required', 'numeric', 'min:0'],
             'location' => ['required', 'string', 'max:255'],
-            'starts_at' => ['required', 'date'],
+            'starts_at' => ['nullable', 'date'],
             'duration_minutes' => ['required', 'integer', 'min:1'],
             'max' => ['nullable', 'integer', 'min:1'],
             'day' => ['nullable', 'array'],
