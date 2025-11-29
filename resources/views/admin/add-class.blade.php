@@ -124,15 +124,6 @@
 
                           </div>
 
-                          <!-- STARTS AT DATETIME -->
-                          <div class="row g-4 mt-2">
-                            <div class="col-md-3">
-                              <label class="form-label">Starts At</label>
-                              <input class="form-control" name="starts_at" type="datetime-local" placeholder="Start Date & Time"
-                                value="{{ old('starts_at') }}">
-                            </div>
-                          </div>
-
                           <!-- GRID UNTUK DAY + START TIME + END TIME -->
                           <div class="row g-4 mt-2">
 
@@ -204,7 +195,7 @@
                             <div class="col-md-6">
                               <label class="form-label">Duration (Hours)</label>
                               <input class="form-control" name="duration_minutes"
-                                type="number" min="1" placeholder="Minutes"
+                                type="number" min="1" placeholder="Hours"
                                 value="{{ old('duration_minutes', $class->duration_minutes ?? '') }}">
                             </div>
 

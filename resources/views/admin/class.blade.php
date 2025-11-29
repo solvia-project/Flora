@@ -82,7 +82,7 @@
                             <th>Slot</th>
                             <th>Price</th>
                             <th>Location</th>
-                            <th>Date & Time</th>
+                            <th>Days</th>
                             <th>Duration</th>
                             <th>Description</th>
                             <th>Update at</th>
