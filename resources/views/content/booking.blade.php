@@ -181,11 +181,9 @@
                 </div>
                 {{-- select day --}}
                 <div class="w-full">
-                    <select name="day" x-model="selectedDay" @change="selectedDate = computeDateForDay(selectedDay)" :disabled="days.length === 0" :class="{'opacity-60 cursor-not-allowed bg-gray-50': days.length === 0}"
+                    <select name="day" x-model="selectedDay" :disabled="days.length === 0" :class="{'opacity-60 cursor-not-allowed bg-gray-50': days.length === 0}"
                         class="w-full border border-gray-300 py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300">
-                        <template x-if="days.length === 0">
-                            <option value="">Select Day</option>
-                        </template>
+                        <option value="">Select Day</option>
                         <template x-for="d in days" :key="d">
                             <option :value="d" x-text="d.charAt(0).toUpperCase() + d.slice(1)"></option>
                         </template>
@@ -208,9 +206,7 @@
 
                         <select id="time" name="time" x-model="selectedTime" :disabled="times.length === 0" :class="{'opacity-60 cursor-not-allowed bg-gray-50': times.length === 0}"
                             class="w-full border border-gray-300 py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300" required>
-                            <template x-if="times.length === 0">
-                                <option value="">Select Time</option>
-                            </template>
+                            <option value="">Select Time</option>
                             <template x-for="t in times" :key="t">
                                 <option :value="t" x-text="t"></option>
                             </template>

@@ -17,7 +17,7 @@ class UpdateClassRequest extends FormRequest
             'name' => ['sometimes', 'required', 'string', 'max:255'],
             'price' => ['sometimes', 'required', 'numeric', 'min:0'],
             'location' => ['sometimes', 'required', 'string', 'max:255'],
-            'starts_at' => ['sometimes', 'required', 'date'],
+            'starts_at' => ['sometimes', 'nullable', 'date'],
             'duration_minutes' => ['sometimes', 'required', 'integer', 'min:1'],
             'max' => ['sometimes', 'nullable', 'integer', 'min:1'],
             'day' => ['sometimes', 'nullable', 'array'],

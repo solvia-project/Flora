@@ -42,8 +42,10 @@ class ClassController extends Controller
                 return strtolower(trim((string) $d));
             }, $data['day']));
         }
-        if (isset($data['starts_at'])) {
-            $data['starts_at'] = Carbon::createFromFormat('Y-m-d\TH:i', $data['starts_at']);
+        if (array_key_exists('starts_at', $data)) {
+            $data['starts_at'] = !empty($data['starts_at'])
+                ? Carbon::createFromFormat('Y-m-d\TH:i', $data['starts_at'])
+                : null;
         }
         if ($request->hasFile('image')) {
             $data['image_path'] = $request->file('image')->store('classes', 'public');
@@ -66,8 +68,10 @@ class ClassController extends Controller
                 return strtolower(trim((string) $d));
             }, $data['day']));
         }
-        if (isset($data['starts_at'])) {
-            $data['starts_at'] = Carbon::createFromFormat('Y-m-d\TH:i', $data['starts_at']);
+        if (array_key_exists('starts_at', $data)) {
+            $data['starts_at'] = !empty($data['starts_at'])
+                ? Carbon::createFromFormat('Y-m-d\TH:i', $data['starts_at'])
+                : null;
         }
         if ($request->hasFile('image')) {
             if ($class->image_path) {
