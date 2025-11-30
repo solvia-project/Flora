@@ -76,7 +76,7 @@
                       <table class="display" id="data-source-1" style="width:100%">
                         <thead>
                           <tr>
-                            <th>ID</th>
+                            <th>No</th>
                             <th>Image Product</th>
                             <th>Class Name</th>
                             <th>Slot</th>
@@ -92,7 +92,7 @@
                         <tbody>
                           @foreach(($classes ?? []) as $c)
                           <tr>
-                            <td>{{ $c->id }}</td>
+                            <td>{{ ($classes->firstItem() ?? 1) + $loop->index }}</td>
                             <td>
                               @if($c->image_path)
                               <img src="{{ asset('storage/'.$c->image_path) }}" alt="image" style="width:40px;height:40px;object-fit:cover;">

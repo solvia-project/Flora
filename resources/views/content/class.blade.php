@@ -40,12 +40,23 @@
                                 <p>Duration : {{ $c->duration_minutes }} Hours</p>
                                 <p>Starts : {{ optional($c->starts_at)->format('l, d M Y H:i') }}</p>
                                 <p>Location : {{ $c->location }}</p>
+                                @php $info = ($slotMap[$c->id] ?? null); @endphp
+                                @if($info)
+                                <p>Nearest : {{ $info['display_date'] }}</p>
+                                <p>
+                                    @foreach(($info['times'] ?? []) as $t)
+                                    {{ $t['value'] }} : {{ $t['count'] }}/{{ $c->max ?? '-' }}@if($c->max && $t['full']) (Full) @endif
+                                    @endforeach
+                                    @if($c->max && $info['day_full']) (Full) @endif
+                                </p>
+                                @else
                                 <p>
                                     Class Slot : {{ $c->bookings_count }}/{{ $c->max ?? '-' }}
                                     @if($c->max && $c->bookings_count == $c->max)
                                     (Full)
                                     @endif
                                 </p>
+                                @endif
                             </div>
                         </div>
                     </div>

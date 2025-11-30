@@ -68,6 +68,33 @@ class BookingController extends Controller
 
         $bookingDate = Carbon::parse($request->date . ' ' . $request->time);
 
+        if ($class && $class->max) {
+            $existing = Booking::where('class_id', $class->id)
+                ->whereDate('booking_date', $bookingDate->format('Y-m-d'))
+                ->whereTime('booking_date', $bookingDate->format('H:i'))
+                ->count();
+
+            if ($existing >= (int) $class->max) {
+                $others = array_values(array_diff($allowedTimes, [$request->time]));
+                $allFull = true;
+                foreach ($others as $t) {
+                    $c = Booking::where('class_id', $class->id)
+                        ->whereDate('booking_date', $bookingDate->format('Y-m-d'))
+                        ->whereTime('booking_date', $t)
+                        ->count();
+                    if ($c < (int) $class->max) {
+                        $allFull = false;
+                        break;
+                    }
+                }
+                $msg = $allFull ? 'Selected day is fully booked' : 'Selected time is fully booked';
+                if ($request->expectsJson()) {
+                    return response()->json(['errors' => ['time' => [$msg]]], 422);
+                }
+                return back()->withInput()->withErrors(['time' => $msg]);
+            }
+        }
+
         $booking = Booking::create([
             'user_id' => Auth::id(),
             'class_id' => (int) $request->class_id,

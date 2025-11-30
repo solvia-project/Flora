@@ -69,7 +69,7 @@
                       <table class="display" id="data-source-1" style="width:100%">
                         <thead>
                           <tr>
-                            <th>ID</th>
+                            <th>No</th>
                             <th>Name</th>
                             <th>Email</th>
                             <th>Phone</th>
@@ -79,7 +79,7 @@
                         <tbody>
                             @foreach(($users ?? []) as $u)
                                 <tr>
-                                    <td>{{ $u->id }}</td>
+                                    <td>{{ ($users->firstItem() ?? 1) + $loop->index }}</td>
                                     <td>{{ $u->name }}</td>
                                     <td>{{ $u->email }}</td>
                                     <td>{{ $u->phone ?? '-' }}</td>

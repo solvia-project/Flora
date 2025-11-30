@@ -28,6 +28,10 @@
                 errors: {},
                 invoice: null,
                 loading: false,
+                init() {
+                    this.selectedDate = this.computeDateForDay(this.selectedDay);
+                    this.$watch('selectedDay', (v) => { this.selectedDate = this.computeDateForDay(v); });
+                },
                 updateTimes() {
                     const opt = $refs.userClass.selectedOptions[0];
                     const t1 = opt ? opt.dataset.time1 || '' : '';
@@ -91,6 +95,14 @@
                 },
                 async submitBooking() {
                     this.errors = {};
+                    if (!this.validateForm()) {
+                        const userClass = $refs.userClass.value;
+                        if (!userClass) this.errors.class_id = ['Please select class'];
+                        if (!this.selectedDay) this.errors.day = ['Please select day'];
+                        if (!this.selectedTime) this.errors.time = ['Please select time'];
+                        if (!this.selectedDate) this.errors.date = ['Please select day to compute date'];
+                        return;
+                    }
                     const form = $refs.bookingForm;
                     const fd = new FormData(form);
                     try {
