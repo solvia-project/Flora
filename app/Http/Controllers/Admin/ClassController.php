@@ -10,6 +10,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
+use Throwable;
 
 class ClassController extends Controller
 {
@@ -26,25 +28,50 @@ class ClassController extends Controller
         return view('admin.edit-class', compact('class'));
     }
 
+    public function create()
+    {
+        $class = null;
+        return view('admin.add-class', compact('class'));
+    }
+
     public function store(StoreClassRequest $request): RedirectResponse
     {
         $data = $request->validated();
-        if (isset($data['starts_at'])) {
-            $data['starts_at'] = Carbon::createFromFormat('Y-m-d\TH:i', $data['starts_at']);
+        if (isset($data['day']) && is_array($data['day'])) {
+            $data['day'] = implode(',', array_map(function ($d) {
+                return strtolower(trim((string) $d));
+            }, $data['day']));
+        }
+        if (array_key_exists('starts_at', $data)) {
+            $data['starts_at'] = !empty($data['starts_at'])
+                ? Carbon::createFromFormat('Y-m-d\TH:i', $data['starts_at'])
+                : null;
         }
         if ($request->hasFile('image')) {
             $data['image_path'] = $request->file('image')->store('classes', 'public');
         }
-        $class = WorkshopClass::create($data);
-        return redirect()->route('admin.class.index');
+        try {
+            WorkshopClass::create($data);
+        } catch (Throwable $e) {
+            $reason = $this->friendlyDbError($e);
+            return back()->withInput()->with('error', $reason);
+        }
+        return redirect()->route('admin.class.index')->with('success', 'Data class berhasil ditambahkan');
     }
 
     public function update(UpdateClassRequest $request, $id): RedirectResponse
     {
         $class = WorkshopClass::findOrFail($id);
         $data = $request->validated();
-        if (isset($data['starts_at'])) {
-            $data['starts_at'] = Carbon::createFromFormat('Y-m-d\TH:i', $data['starts_at']);
+        if (isset($data['day']) && is_array($data['day'])) {
+            $data['day'] = implode(',', array_map(function ($d) {
+                return strtolower(trim((string) $d));
+            }, $data['day']));
+        }
+        if (array_key_exists('starts_at', $data)) {
+            $data['starts_at'] = !empty($data['starts_at'])
+                ? Carbon::createFromFormat('Y-m-d\TH:i', $data['starts_at'])
+                : null;
         }
         if ($request->hasFile('image')) {
             if ($class->image_path) {
@@ -52,8 +79,13 @@ class ClassController extends Controller
             }
             $data['image_path'] = $request->file('image')->store('classes', 'public');
         }
-        $class->update($data);
-        return redirect()->route('admin.class.index');
+        try {
+            $class->update($data);
+        } catch (Throwable $e) {
+            $reason = $this->friendlyDbError($e);
+            return back()->withInput()->with('error', $reason);
+        }
+        return redirect()->route('admin.class.index')->with('success', 'Data class berhasil diperbarui');
     }
 
     public function destroy($id): RedirectResponse
@@ -64,5 +96,20 @@ class ClassController extends Controller
         }
         $class->delete();
         return redirect()->route('admin.class.index');
+    }
+
+    protected function friendlyDbError(Throwable $e): string
+    {
+        $m = $e->getMessage();
+        if (Str::contains($m, 'Data too long')) {
+            return 'Gagal menyimpan: nilai salah satu field melebihi batas panjang kolom.';
+        }
+        if (Str::contains($m, 'Integrity constraint violation')) {
+            return 'Gagal menyimpan: data tidak memenuhi aturan relasi atau keunikan.';
+        }
+        if (Str::contains($m, 'Unknown column')) {
+            return 'Gagal menyimpan: kolom tidak ditemukan dalam tabel.';
+        }
+        return 'Gagal menyimpan: ' . Str::limit($m, 180);
     }
 }

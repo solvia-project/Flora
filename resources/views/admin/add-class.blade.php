@@ -30,7 +30,7 @@
             <div class="page-header">
               <div class="row">
                 <div class="col-sm-6">
-                  <h3>Edit Class</h3>
+                  <h3>Add Class</h3>
                   <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="index.html">Admin</a></li>
                     <li class="breadcrumb-item">Class</li>
@@ -69,7 +69,7 @@
                         @endif
 
                         <div class="card-header pb-0">
-                          <h4 class="card-title mb-0">Edit Class</h4>
+                          <h4 class="card-title mb-0">Add Class</h4>
                           <div class="card-options">
                             <a class="card-options-collapse" href="#" data-bs-toggle="card-collapse"><i class="fe fe-chevron-up"></i></a>
                             <a class="card-options-remove" href="#" data-bs-toggle="card-remove"><i class="fe fe-x"></i></a>
@@ -127,28 +127,12 @@
                           <!-- GRID UNTUK DAY + START TIME + END TIME -->
                           <div class="row g-4 mt-2">
 
-                            <!-- Select Day -->
+                            <!-- Select Days -->
                             <div class="col-md-4 position-relative">
                               <label class="form-label">Select Days</label>
 
-                              @php
-                              $initialDays = old('day', []);
-                              if (empty($initialDays) && isset($class) && $class->day) {
-                              $value = (string) $class->day;
-                              if (ctype_digit($value)) {
-                              $names = ['monday','tuesday','wednesday','thursday','friday','saturday','sunday'];
-                              $mask = (int) $value;
-                              $initialDays = [];
-                              foreach ($names as $i => $n) {
-                              if ($mask & (1 << $i)) { $initialDays[]=$n; }
-                                }
-                                } else {
-                                $initialDays=array_filter(array_map('trim', explode(',', $value)));
-                                }
-                                }
-                                $initialDays=array_map('strtolower', $initialDays);
-                                @endphp
-                                <div x-data='daySelector(@json($initialDays))' class="w-full">
+                              @php $initialDays = array_map('strtolower', old('day', [])); @endphp
+                              <div x-data='daySelector(@json($initialDays))' class="w-full">
 
                                 <!-- Button -->
                                 <button type="button"
@@ -172,100 +156,98 @@
                                   </template>
 
                                 </div>
+                              </div>
                             </div>
-                          </div>
 
-
-                          <!-- Time 1 -->
-                          <div class="col-md-4 relative">
-                            <label for="time_1" class="block mb-1 text-sm font-medium text-heading">Time 1</label>
-                            <input
-                              type="time"
-                              id="time_1"
-                              name="time_1"
-                              class="block w-full p-2.5 pr-10 bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-md focus:ring-brand focus:border-brand shadow-xs"
-                              min="09:00"
-                              max="18:00"
-                              value="{{ old('time_1', isset($class) && $class->time_1 ? substr($class->time_1, 0, 5) : '') }}"
-                              required />
-                          </div>
-
-                          <!-- Time 2 -->
-                          <div class="col-md-4 relative">
-                            <label for="time_2" class="block mb-1 text-sm font-medium text-heading">Time 2</label>
-                            <input
-                              type="time"
-                              id="time_2"
-                              name="time_2"
-                              class="block w-full p-2.5 pr-10 bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-md focus:ring-brand focus:border-brand shadow-xs"
-                              min="09:00"
-                              max="18:00"
-                              value="{{ old('time_2', isset($class) && $class->time_2 ? substr($class->time_2, 0, 5) : '') }}"
-                              required />
-                          </div>
-
-                        </div>
-
-                        <!-- GRID 2 KOLOM -->
-                        <div class="row g-4 mt-2">
-
-                          <!-- Duration -->
-                          <div class="col-md-6">
-                            <label class="form-label">Duration (Hours)</label>
-                            <input class="form-control" name="duration_minutes"
-                              type="number" min="1" placeholder="Hours"
-                              value="{{ old('duration_minutes', $class->duration_minutes ?? '') }}">
-                          </div>
-
-                          <!-- Image -->
-                          <div class="col-md-6">
-                            <label class="form-label">Image Product</label>
-                            <input class="form-control" name="image" type="file" accept="image/*">
-
-                            @if(isset($class) && $class->image_path)
-                            <div class="mt-2">
-                              <img src="{{ asset('storage/'.$class->image_path) }}" class="img-thumbnail"
-                                style="width:160px;height:160px;object-fit:cover;">
-                              <small class="text-muted">Current image preview</small>
+                            <!-- Time 1 -->
+                            <div class="col-md-4">
+                              <label for="time_1" class="form-label">Time 1</label>
+                              <input
+                                type="time"
+                                id="time_1"
+                                name="time_1"
+                                class="form-control"
+                                min="09:00"
+                                max="18:00"
+                                required />
                             </div>
-                            @endif
+
+                            <!-- Time 2 -->
+                            <div class="col-md-4">
+                              <label for="time_2" class="form-label">Time 2</label>
+                              <input
+                                type="time"
+                                id="time_2"
+                                name="time_2"
+                                class="form-control"
+                                min="09:00"
+                                max="18:00"
+                                required />
+                            </div>
+
+                          </div>
+
+
+                          <!-- GRID 2 KOLOM -->
+                          <div class="row g-4 mt-2">
+
+                            <!-- Duration -->
+                            <div class="col-md-6">
+                              <label class="form-label">Duration (Hours)</label>
+                              <input class="form-control" name="duration_minutes"
+                                type="number" min="1" placeholder="Hours"
+                                value="{{ old('duration_minutes', $class->duration_minutes ?? '') }}">
+                            </div>
+
+                            <!-- Image -->
+                            <div class="col-md-6">
+                              <label class="form-label">Image Product</label>
+                              <input class="form-control" name="image" type="file" accept="image/*">
+
+                              @if(isset($class) && $class->image_path)
+                              <div class="mt-2">
+                                <img src="{{ asset('storage/'.$class->image_path) }}" class="img-thumbnail"
+                                  style="width:160px;height:160px;object-fit:cover;">
+                                <small class="text-muted">Current image preview</small>
+                              </div>
+                              @endif
+                            </div>
+
+                          </div>
+
+                          <!-- DESCRIPTION FULL WIDTH -->
+                          <div class="mt-3">
+                            <label class="form-label">Description</label>
+                            <textarea class="form-control" name="description" rows="5"
+                              placeholder="Enter description">{{ old('description', $class->description ?? '') }}</textarea>
                           </div>
 
                         </div>
 
-                        <!-- DESCRIPTION FULL WIDTH -->
-                        <div class="mt-3">
-                          <label class="form-label">Description</label>
-                          <textarea class="form-control" name="description" rows="5"
-                            placeholder="Enter description">{{ old('description', $class->description ?? '') }}</textarea>
+                        <div class="card-footer text-end">
+                          <button class="btn btn-primary px-4" type="submit">Save</button>
                         </div>
-
+                      </form>
                     </div>
-
-                    <div class="card-footer text-end">
-                      <button class="btn btn-primary px-4" type="submit">Save</button>
-                    </div>
-                    </form>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+          <!-- Container-fluid Ends-->
         </div>
-        <!-- Container-fluid Ends-->
-      </div>
-      <!-- footer start-->
+        <!-- footer start-->
 
-    </div>
+      </div>
     </div>
 </x-admin-app>
+
 
 <script>
   function daySelector(initial = []) {
     return {
       open: false,
       selectedDays: initial,
-
       days: [{
           value: 'monday',
           label: 'Monday'
@@ -295,20 +277,16 @@
           label: 'Sunday'
         },
       ],
-
       buttonText() {
         if (this.selectedDays.length === 0) {
           return 'Select Days';
         }
-
         let selectedLabels = this.days
           .filter(d => this.selectedDays.includes(d.value))
           .map(d => d.label);
-
         if (selectedLabels.length > 3) {
           return `${selectedLabels.length} days selected`;
         }
-
         return selectedLabels.join(', ');
       }
     };

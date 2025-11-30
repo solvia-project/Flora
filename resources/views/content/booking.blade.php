@@ -4,7 +4,7 @@
     </x-slot>
 
     <section class="min-h-screen flex items-center justify-center bg-center bg-cover px-4 sm:px-6 lg:px-8"
-             style="background-image: url('{{ asset('img/bg/class.png') }}');">
+        style="background-image: url('{{ asset('img/bg/class.png') }}');">
 
         <div
             x-data="{
@@ -20,12 +20,116 @@
                     { name: 'GoPay', img: '{{ asset('img/assets/gopay.png') }}' },
                     { name: 'Shopeepay', img: '{{ asset('img/assets/spay.png') }}' }
                 ],
+                times: [],
+                selectedTime: '{{ old('time') }}',
+                days: [],
+                selectedDay: '{{ old('day') }}',
+                selectedDate: '',
+                errors: {},
+                invoice: null,
+                loading: false,
+                init() {
+                    this.selectedDate = this.computeDateForDay(this.selectedDay);
+                    this.$watch('selectedDay', (v) => { this.selectedDate = this.computeDateForDay(v); });
+                },
+                updateTimes() {
+                    const opt = $refs.userClass.selectedOptions[0];
+                    const t1 = opt ? opt.dataset.time1 || '' : '';
+                    const t2 = opt ? opt.dataset.time2 || '' : '';
+                    const arr = [];
+                    if (t1) arr.push(t1);
+                    if (t2) arr.push(t2);
+                    this.times = arr;
+                    if (!this.times.includes(this.selectedTime)) {
+                        this.selectedTime = '';
+                    }
+                },
+                updateDays() {
+                    const opt = $refs.userClass.selectedOptions[0];
+                    const csv = opt ? opt.dataset.days || '' : '';
+                    const arr = csv ? csv.split(',').map(s => s.trim().toLowerCase()).filter(Boolean) : [];
+                    this.days = arr;
+                    if (!this.days.includes(this.selectedDay)) {
+                        this.selectedDay = '';
+                    }
+                    this.selectedDate = this.computeDateForDay(this.selectedDay);
+                },
+                computeDateForDay(day) {
+                    const map = { sunday:0, monday:1, tuesday:2, wednesday:3, thursday:4, friday:5, saturday:6 };
+                    if (!day || !(day in map)) return '';
+                    const today = new Date();
+                    const target = map[day];
+                    const diff = (target - today.getDay() + 7) % 7;
+                    const d = new Date(today.getFullYear(), today.getMonth(), today.getDate() + diff);
+                    const y = d.getFullYear();
+                    const m = String(d.getMonth() + 1).padStart(2, '0');
+                    const dt = String(d.getDate()).padStart(2, '0');
+                    return `${y}-${m}-${dt}`;
+                },
+                formatDate(dt) {
+                    if (!dt) return '-';
+                    const iso = (dt + '').replace(' ', 'T');
+                    const d = new Date(iso);
+                    if (isNaN(d)) return dt;
+                    return d.toLocaleDateString('en-US', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' });
+                },
+                formatTime(dt) {
+                    if (!dt) return '-';
+                    const iso = (dt + '').replace(' ', 'T');
+                    const d = new Date(iso);
+                    if (isNaN(d)) return dt;
+                    return d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+                },
+                formatCurrency(v) {
+                    try { return 'IDR ' + new Intl.NumberFormat('id-ID').format(Number(v || 0)); } catch(e) { return 'IDR ' + (v || 0); }
+                },
                 validateForm() {
                     const name = $refs.userName.value.trim();
                     const email = $refs.userEmail.value.trim();
                     const phone = $refs.userPhone.value.trim();
                     const userClass = $refs.userClass.value;
-                    return name && email && phone && userClass && userClass !== 'Select Class';
+                    const day = this.selectedDay;
+                    const time = this.selectedTime;
+                    const date = this.selectedDate;
+                    return name && email && phone && userClass && userClass !== 'Select Class' && day && time && date;
+                },
+                async submitBooking() {
+                    this.errors = {};
+                    if (!this.validateForm()) {
+                        const userClass = $refs.userClass.value;
+                        if (!userClass) this.errors.class_id = ['Please select class'];
+                        if (!this.selectedDay) this.errors.day = ['Please select day'];
+                        if (!this.selectedTime) this.errors.time = ['Please select time'];
+                        if (!this.selectedDate) this.errors.date = ['Please select day to compute date'];
+                        return;
+                    }
+                    const form = $refs.bookingForm;
+                    const fd = new FormData(form);
+                    try {
+                        const res = await fetch(form.action, {
+                            method: 'POST',
+                            headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' },
+                            credentials: 'same-origin',
+                            body: fd,
+                        });
+                        if (res.status === 422) {
+                            const data = await res.json();
+                            this.errors = data.errors || {};
+                            return;
+                        }
+                        if (!res.ok) {
+                            return;
+                        }
+                        const ct = res.headers.get('content-type') || '';
+                        if (ct.includes('application/json')) {
+                            const data = await res.json();
+                            this.invoice = data;
+                        }
+                        this.open = true;
+                        this.modalStep = 'payment';
+                    } catch (e) {
+                        return;
+                    }
                 }
             }"
             class="w-full max-w-4xl bg-white rounded-lg shadow-lg p-8 md:p-12">
@@ -39,63 +143,122 @@
             </p>
 
             {{-- Form --}}
-            <form method="POST" action="{{ route('booking.store') }}" id="bookingForm" class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <form method="POST" action="{{ route('booking.store') }}" id="bookingForm" x-ref="bookingForm" class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
                 @csrf
-                <input type="text" placeholder="Your Name" x-ref="userName" value="{{ Auth::user()->name ?? '' }}"
-                       class="w-full border border-gray-300 py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300">
-                <input type="email" placeholder="Your Email" x-ref="userEmail" value="{{ Auth::user()->email ?? '' }}"
-                       class="w-full border border-gray-300 py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300">
-                <input type="tel" placeholder="Your Phone" x-ref="userPhone" value="{{ Auth::user()->phone ?? '' }}"
-                       class="w-full border border-gray-300 py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300">
-                <select x-ref="userClass" name="class_id"
+                <input type="hidden" name="date" :value="selectedDate">
+                <div class="w-full">
+                    <input type="text" placeholder="Your Name" x-ref="userName" value="{{ Auth::user()->name ?? '' }}"
                         class="w-full border border-gray-300 py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300">
-                    <option value="">Select Class</option>
-                    @foreach(($classes ?? []) as $c)
-                        <option value="{{ $c->id }}" @selected(old('class_id') == $c->id)>{{ $c->name }} — IDR {{ number_format($c->price, 0, ',', '.') }}</option>
-                    @endforeach
-                </select>
-                @error('class_id')
+                    @error('name')
                     <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
-                @enderror
-
-                <input type="date" x-ref="userDate" name="date" value="{{ old('date') }}"
-                       class="w-full border border-gray-300 py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300">
-                @error('date')
-                    <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
-                @enderror
-
-                <div class="relative">
-                    <div class="absolute inset-y-0 end-0 top-0 flex items-center pe-3.5 pointer-events-none">
-                        <svg class="w-4 h-4 text-body" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
-                    </div>
-                    <input type="time" id="time" class="block w-full p-2.5 bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand shadow-xs placeholder:text-body" min="09:00" max="18:00" value="00:00" required />
+                    @enderror
+                    <template x-if="errors.name">
+                        <p class="text-red-600 text-sm mt-1" x-text="Array.isArray(errors.name) ? errors.name[0] : errors.name"></p>
+                    </template>
                 </div>
+                <div class="w-full">
+                    <input type="email" placeholder="Your Email" x-ref="userEmail" value="{{ Auth::user()->email ?? '' }}"
+                        class="w-full border border-gray-300 py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300">
+                    @error('email')
+                    <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                    @enderror
+                    <template x-if="errors.email">
+                        <p class="text-red-600 text-sm mt-1" x-text="Array.isArray(errors.email) ? errors.email[0] : errors.email"></p>
+                    </template>
+                </div>
+                <div class="w-full">
+                    <input type="tel" placeholder="Your Phone" x-ref="userPhone" value="{{ Auth::user()->phone ?? '' }}"
+                        class="w-full border border-gray-300 py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300">
+                    @error('phone')
+                    <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                    @enderror
+                    <template x-if="errors.phone">
+                        <p class="text-red-600 text-sm mt-1" x-text="Array.isArray(errors.phone) ? errors.phone[0] : errors.phone"></p>
+                    </template>
+                </div>
+                <div class="w-full">
+                    <select x-ref="userClass" name="class_id" @change="updateTimes(); updateDays()" x-init="updateTimes(); updateDays()"
+                        class="w-full border border-gray-300 py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300">
+                        <option value="">Select Class</option>
+                        @foreach(($classes ?? []) as $c)
+                        <option value="{{ $c->id }}" @selected(old('class_id')==$c->id) data-time1="{{ $c->time_1 ? substr($c->time_1,0,5) : '' }}" data-time2="{{ $c->time_2 ? substr($c->time_2,0,5) : '' }}" data-days="{{ $c->day ?? '' }}">{{ $c->name }} — IDR {{ number_format($c->price, 0, ',', '.') }}</option>
+                        @endforeach
+                    </select>
+                    @error('class_id')
+                    <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                    @enderror
+                    <template x-if="errors.class_id">
+                        <p class="text-red-600 text-sm mt-1" x-text="Array.isArray(errors.class_id) ? errors.class_id[0] : errors.class_id"></p>
+                    </template>
+                </div>
+                {{-- select day --}}
+                <div class="w-full">
+                    <select name="day" x-model="selectedDay" :disabled="days.length === 0" :class="{'opacity-60 cursor-not-allowed bg-gray-50': days.length === 0}"
+                        class="w-full border border-gray-300 py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300">
+                        <option value="">Select Day</option>
+                        <template x-for="d in days" :key="d">
+                            <option :value="d" x-text="d.charAt(0).toUpperCase() + d.slice(1)"></option>
+                        </template>
+                    </select>
+                    @error('day')
+                    <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                    @enderror
+                    <template x-if="errors.day">
+                        <p class="text-red-600 text-sm mt-1" x-text="Array.isArray(errors.day) ? errors.day[0] : errors.day"></p>
+                    </template>
+                </div>
+
+
+                {{-- TIME PICKER --}}
+                <div class="w-full">
+                    <div class="relative ">
+                        <div class="absolute inset-y-0 end-0 top-0 flex items-center pe-3.5 pointer-events-none">
+
+                        </div>
+
+                        <select id="time" name="time" x-model="selectedTime" :disabled="times.length === 0" :class="{'opacity-60 cursor-not-allowed bg-gray-50': times.length === 0}"
+                            class="w-full border border-gray-300 py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300" required>
+                            <option value="">Select Time</option>
+                            <template x-for="t in times" :key="t">
+                                <option :value="t" x-text="t"></option>
+                            </template>
+                        </select>
+                    </div>
+
+                    @error('time')
+                    <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                    @enderror
+                    <template x-if="errors.time">
+                        <p class="text-red-600 text-sm mt-1" x-text="Array.isArray(errors.time) ? errors.time[0] : errors.time"></p>
+                    </template>
+                </div>
+
             </form>
 
             {{-- Book Now Button --}}
             <div class="mt-6 text-end">
-                <button type="submit" form="bookingForm"
-                        class="bg-pink-300 text-black py-2 px-6 rounded-lg hover:bg-pink-700 transition">
+                <button type="button" @click.prevent="submitBooking()"
+                    class="bg-pink-300 text-black py-2 px-6 rounded-lg hover:bg-pink-700 transition">
                     Book Now
                 </button>
             </div>
 
             {{-- Payment Modal --}}
             <div x-show="open" x-cloak
-                 class="fixed inset-0 z-50 bg-black/20 backdrop-blur-sm overflow-y-auto p-4 flex items-center justify-center">
+                class="fixed inset-0 z-50 bg-black/20 backdrop-blur-sm overflow-y-auto p-4 flex items-center justify-center">
 
                 <div class="bg-white rounded-lg w-full max-w-3xl p-6 relative shadow-lg max-h-[85vh] overflow-y-auto">
                     <p class="my-5 cursor-pointer" @click="modalStep='payment'; showSuccess=false">&leftarrow; Purchase Arrangement</p>
 
                     {{-- Close --}}
                     <button @click="open = false"
-                            class="absolute top-2 right-2 sm:top-4 sm:right-4 text-gray-500 hover:text-gray-700 text-xl sm:text-2xl">
+                        class="absolute top-2 right-2 sm:top-4 sm:right-4 text-gray-500 hover:text-gray-700 text-xl sm:text-2xl">
                         &times;
                     </button>
 
                     {{-- Step: Payment --}}
                     <div x-show="modalStep === 'payment'" x-transition class="p-5">
-                        <h2 class="text-xl font-bold font-['syne'] mb-4">{{ isset($invoiceBooking) ? optional($invoiceBooking->class)->name : 'Beginner Floral Arrangement' }}</h2>
+                        <h2 class="text-xl font-bold font-['syne'] mb-4" x-text="invoice ? invoice.class.name : '{{ isset($invoiceBooking) ? optional($invoiceBooking->class)->name : 'Beginner Floral Arrangement' }}'"></h2>
 
                         {{-- Summary Info --}}
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
@@ -106,7 +269,7 @@
                                 </div>
                                 <div>
                                     <p>Name</p>
-                                    <p>{{ isset($invoiceBooking) ? optional($invoiceBooking->user)->name : (Auth::user()->name ?? '—') }}</p>
+                                    <p x-text="invoice ? invoice.user.name : '{{ isset($invoiceBooking) ? optional($invoiceBooking->user)->name : (Auth::user()->name ?? '—') }}'"></p>
                                 </div>
                             </div>
 
@@ -116,8 +279,8 @@
                                 </div>
                                 <div>
                                     <p>Contact</p>
-                                    <p>{{ isset($invoiceBooking) ? optional($invoiceBooking->user)->email : (Auth::user()->email ?? '—') }}</p>
-                                    <p>{{ isset($invoiceBooking) ? optional($invoiceBooking->user)->phone : (Auth::user()->phone ?? '—') }}</p>
+                                    <p x-text="invoice ? invoice.user.email : '{{ isset($invoiceBooking) ? optional($invoiceBooking->user)->email : (Auth::user()->email ?? '—') }}'"></p>
+                                    <p x-text="invoice ? invoice.user.phone : '{{ isset($invoiceBooking) ? optional($invoiceBooking->user)->phone : (Auth::user()->phone ?? '—') }}'"></p>
                                 </div>
                             </div>
 
@@ -127,8 +290,8 @@
                                 </div>
                                 <div>
                                     <p>Date and Time</p>
-                                    <p>{{ isset($invoiceBooking) ? optional($invoiceBooking->booking_date)->format('l, d F Y') : '-' }}</p>
-                                    <p>{{ isset($invoiceBooking) ? optional($invoiceBooking->booking_date)->format('H:i') : '-' }}</p>
+                                    <p x-text="invoice ? formatDate(invoice.booking_date) : '{{ isset($invoiceBooking) ? optional($invoiceBooking->booking_date)->format('l, d F Y') : '-' }}'"></p>
+                                    <p x-text="invoice ? formatTime(invoice.booking_date) : '{{ isset($invoiceBooking) ? optional($invoiceBooking->booking_date)->format('H:i') : '-' }}'"></p>
                                 </div>
                             </div>
 
@@ -138,7 +301,7 @@
                                 </div>
                                 <div>
                                     <p>Place</p>
-                                    <p>{{ isset($invoiceBooking) ? optional($invoiceBooking->class)->location : '—' }}</p>
+                                    <p x-text="invoice ? (invoice.class.location || '—') : '{{ isset($invoiceBooking) ? optional($invoiceBooking->class)->location : '—' }}'"></p>
                                 </div>
                             </div>
 
@@ -155,7 +318,7 @@
 
                             <div class="flex justify-between my-5 text-sm sm:text-base">
                                 <p>Total</p>
-                                <p>{{ isset($invoiceBooking) ? 'IDR '.number_format(optional($invoiceBooking->class)->price ?? 0, 0, ',', '.') : '-' }}</p>
+                                <p x-text="invoice ? formatCurrency(invoice.class.price) : '{{ isset($invoiceBooking) ? 'IDR '.number_format(optional($invoiceBooking->class)->price ?? 0, 0, ',', '.') : '-' }}'"></p>
                             </div>
 
                             <hr class="my-2 text-gray-400/50">
@@ -198,24 +361,24 @@
 
                             {{-- Success Message --}}
                             <div x-show="showSuccess"
-                                 class="mb-4 p-2 bg-green-50 border border-green-200 text-black font-semibold rounded text-center text-sm sm:text-base">
+                                class="mb-4 p-2 bg-green-50 border border-green-200 text-black font-semibold rounded text-center text-sm sm:text-base">
                                 Successful Payment!
                             </div>
 
                             {{-- Pay Now --}}
                             <form id="paymentForm" method="POST" action="{{ route('booking.pay') }}">
                                 @csrf
-                                <input type="hidden" name="booking_id" value="{{ $invoiceBooking->id ?? '' }}">
+                                <input type="hidden" name="booking_id" :value="invoice ? invoice.id : '{{ $invoiceBooking->id ?? '' }}'">
                                 <input type="hidden" name="payment_method" :value="paymentMethod">
                             </form>
                             <button x-show="!showSuccess" type="submit" form="paymentForm"
-                                    class="w-full bg-pink-200 text-black py-2 px-6 rounded-lg hover:bg-pink-300 transition">
+                                class="w-full bg-pink-200 text-black py-2 px-6 rounded-lg hover:bg-pink-300 transition">
                                 Pay Now
                             </button>
 
                             {{-- See Invoice --}}
                             <button x-show="showSuccess" @click.prevent="modalStep='invoice'"
-                                    class="w-full mt-2 bg-pink-200 text-black py-2 px-6 rounded-lg hover:bg-pink-300 transition text-sm sm:text-base">
+                                class="w-full mt-2 bg-pink-200 text-black py-2 px-6 rounded-lg hover:bg-pink-300 transition text-sm sm:text-base">
                                 See Invoice
                             </button>
                         </div>
@@ -245,7 +408,7 @@
                                     </div>
                                     <div>
                                         <p>Issued on</p>
-                                        <p><strong>{{ isset($invoiceBooking) ? optional($invoiceBooking->created_at)->format('F j, Y') : '' }}</strong></p>
+                                        <p class="font-semibold">{{ isset($invoiceBooking) ? optional($invoiceBooking->created_at)->format('F j, Y') : '' }}</p>
                                     </div>
                                 </div>
                                 <div class="flex justify-between">
@@ -255,19 +418,21 @@
                                     </div>
                                     <div>
                                         <p>Payment Due</p>
-                                        <p><strong>{{ isset($invoiceBooking) ? optional($invoiceBooking->booking_date)->format('F j, Y') : '' }}</strong></p>
+                                        <p class="font-semibold">{{ isset($invoiceBooking) ? optional($invoiceBooking->booking_date)->format('F j, Y') : '' }}</p>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="flex justify-between">
-                                <p><strong>Description</strong></p>
-                                <div><p>Total</p></div>
+                                <p>Description</p>
+                                <div><strong>Total</strong></div>
                             </div>
 
                             <div class="flex justify-between">
                                 <p><strong>{{ optional(optional($invoiceBooking)->class)->name ?? '' }}</strong></p>
-                                <div><p>{{ isset($invoiceBooking) ? number_format(optional($invoiceBooking->class)->price ?? 0, 0, ',', '.') : '' }}</p></div>
+                                <div>
+                                    <p>{{ isset($invoiceBooking) ? number_format(optional($invoiceBooking->class)->price ?? 0, 0, ',', '.') : '' }}</p>
+                                </div>
                             </div>
 
                             <div class="flex justify-end bg-indigo-50 p-4 gap-4">

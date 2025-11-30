@@ -1,4 +1,5 @@
 <x-admin-app>
+
   <body>
     <!-- Loader starts-->
     <div class="loader-wrapper">
@@ -42,7 +43,7 @@
                     <li class="breadcrumb-item">Class</li>
                   </ol>
                   <div class="mt-2">
-                    <a href="{{ route('admin.class.edit') }}" class="btn btn-primary">Add Class</a>
+                    <a href="{{ route('admin.class.create') }}" class="btn btn-primary">Add Class</a>
                   </div>
                 </div>
 
@@ -51,6 +52,9 @@
           </div>
           <!-- Container-fluid starts-->
           <div class="container-fluid">
+            @if(session('success'))
+              <div class="alert alert-success" role="alert">{{ session('success') }}</div>
+            @endif
             <div class="row">
               <div class="col-md-3 col-lg-2 mb-3">
                 <div class="card">
@@ -72,12 +76,13 @@
                       <table class="display" id="data-source-1" style="width:100%">
                         <thead>
                           <tr>
-                            <th>ID</th>
+                            <th>No</th>
                             <th>Image Product</th>
                             <th>Class Name</th>
+                            <th>Slot</th>
                             <th>Price</th>
                             <th>Location</th>
-                            <th>Date & Time</th>
+                            <th>Days</th>
                             <th>Duration</th>
                             <th>Description</th>
                             <th>Update at</th>
@@ -85,35 +90,40 @@
                           </tr>
                         </thead>
                         <tbody>
-                        @foreach(($classes ?? []) as $c)
-                            <tr>
-                                <td>{{ $c->id }}</td>
-                                <td>
-                                    @if($c->image_path)
-                                        <img src="{{ asset('storage/'.$c->image_path) }}" alt="image" style="width:40px;height:40px;object-fit:cover;">
-                                    @else
-                                        <div class="w-10 h-10 bg-gray-300"></div>
-                                    @endif
-                                </td>
-                                <td>{{ $c->name }}</td>
-                                <td>Rp{{ number_format($c->price, 0, ',', '.') }}</td>
-                                <td>{{ $c->location }}</td>
-                                <td>{{ optional($c->starts_at)->format('d-m-Y H:i') }}</td>
-                                <td>{{ $c->duration_minutes }} Hours</td>
-                                <td>{{ Str::limit($c->description, 120) }}</td>
-                                <td>{{ $c->updated_at->format('d-m-Y H:i') }}</td>
-                                <td>
-                                    <div class="btn-group" role="group" aria-label="Actions">
-                                        <a class="btn btn-warning btn-sm" href="{{ route('admin.class.edit', ['id' => $c->id]) }}">Edit</a>
-                                        <form method="POST" action="{{ route('admin.class.destroy', $c->id) }}" onsubmit="return confirm('Delete this class?')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button class="btn btn-danger btn-sm" type="submit">Delete</button>
-                                        </form>
-                                    </div>
-                                </td>
-                            </tr>
-                        @endforeach
+                          @foreach(($classes ?? []) as $c)
+                          <tr>
+                            <td>{{ ($classes->firstItem() ?? 1) + $loop->index }}</td>
+                            <td>
+                              @if($c->image_path)
+                              <img src="{{ asset('storage/'.$c->image_path) }}" alt="image" style="width:40px;height:40px;object-fit:cover;">
+                              @else
+                              <div class="w-10 h-10 bg-gray-300"></div>
+                              @endif
+                            </td>
+                            <td>{{ $c->name }}</td>
+                            <td>{{ $c->max }}</td>
+                            <td>Rp{{ number_format($c->price, 0, ',', '.') }}</td>
+                            <td>{{ $c->location }}</td>
+                            <td>{{ optional($c->starts_at)->format('d-m-Y H:i') }}</td>
+                            <td>{{ $c->duration_minutes }} Hours</td>
+                            <td>{{ Str::limit($c->description, 120) }}</td>
+                            <td>{{ $c->updated_at->format('d-m-Y H:i') }}</td>
+                            <td>
+                              <div class="btn-group gap-2" role="group" aria-label="Actions">
+                                <div>
+                                    <a class="btn btn-warning btn-sm" href="{{ route('admin.class.edit', ['id' => $c->id]) }}">Edit</a>
+                                </div>
+                                <div>
+                                    <form method="POST" action="{{ route('admin.class.destroy', $c->id) }}" onsubmit="return confirm('Delete this class?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="btn btn-danger btn-sm" type="submit">Delete</button>
+                                    </form>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                          @endforeach
                         </tbody>
                       </table>
                     </div>
