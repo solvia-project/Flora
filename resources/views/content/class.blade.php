@@ -41,14 +41,15 @@
                                 {{-- <p>Starts : {{ optional($c->starts_at)->format('l, d M Y H:i') }}</p> --}}
                                 <p>Location : {{ $c->location }}</p>
                                 @php $info = ($slotMap[$c->id] ?? null); @endphp
-                                @if($info)
-                                <p>Nearest : {{ $info['display_date'] }}</p>
+                                @if($info && isset($info['days']))
+                                @foreach($info['days'] as $d)
+                                <p>Day : {{ $d['display_day'] }}@if($c->max && ($d['day_full'] ?? false)) (Full) @endif</p>
                                 <p>
-                                    @foreach(($info['times'] ?? []) as $t)
+                                    @foreach(($d['times'] ?? []) as $t)
                                     {{ $t['value'] }} : {{ $t['count'] }}/{{ $c->max ?? '-' }}@if($c->max && $t['full']) (Full) @endif
                                     @endforeach
-                                    @if($c->max && $info['day_full']) (Full) @endif
                                 </p>
+                                @endforeach
                                 @else
                                 <p>
                                     Class Slot : {{ $c->bookings_count }}/{{ $c->max ?? '-' }}

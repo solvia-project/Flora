@@ -14,10 +14,7 @@ class BookingController extends Controller
     {
         $classes = WorkshopClass::withCount('bookings')
             ->orderBy('starts_at')
-            ->get()
-            ->filter(function ($c) {
-                return $c->max === null || $c->bookings_count < $c->max;
-            });
+            ->get();
         $invoiceBooking = null;
         $id = session('invoice_booking_id');
         if ($id) {
@@ -144,5 +141,46 @@ class BookingController extends Controller
         $booking->save();
 
         return redirect()->route('booking.index')->with(['invoice_booking_id' => $booking->id, 'modal_step' => 'invoice']);
+    }
+
+    public function availability(Request $request)
+    {
+        $request->validate([
+            'class_id' => ['required', 'exists:classes,id'],
+            'date' => ['required', 'date'],
+        ]);
+
+        $class = WorkshopClass::find((int) $request->class_id);
+        if (!$class) {
+            return response()->json(['times' => []]);
+        }
+        $allowedTimes = array_values(array_filter([
+            $class->time_1 ? substr((string) $class->time_1, 0, 5) : null,
+            $class->time_2 ? substr((string) $class->time_2, 0, 5) : null,
+        ]));
+        $date = Carbon::parse($request->date)->toDateString();
+        $times = [];
+        $dayFull = true;
+        foreach ($allowedTimes as $t) {
+            $count = Booking::where('class_id', $class->id)
+                ->whereDate('booking_date', $date)
+                ->whereTime('booking_date', $t)
+                ->count();
+            $full = $class->max ? $count >= (int) $class->max : false;
+            if (!$full) {
+                $dayFull = false;
+            }
+            $times[] = [
+                'value' => $t,
+                'count' => $count,
+                'full' => $full,
+            ];
+        }
+        return response()->json([
+            'date' => $date,
+            'class_id' => $class->id,
+            'times' => $times,
+            'day_full' => $dayFull,
+        ]);
     }
 }
