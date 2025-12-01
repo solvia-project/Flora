@@ -38,7 +38,7 @@
                             </div>
                             <div class="flex flex-col items-end">
                                 <p>Duration : {{ $c->duration_minutes }} Hours</p>
-                                <p>Starts : {{ optional($c->starts_at)->format('l, d M Y H:i') }}</p>
+                                {{-- <p>Starts : {{ optional($c->starts_at)->format('l, d M Y H:i') }}</p> --}}
                                 <p>Location : {{ $c->location }}</p>
                                 @php $info = ($slotMap[$c->id] ?? null); @endphp
                                 @if($info)
