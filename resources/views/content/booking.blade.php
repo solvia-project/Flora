@@ -30,18 +30,36 @@
                 loading: false,
                 init() {
                     this.selectedDate = this.computeDateForDay(this.selectedDay);
-                    this.$watch('selectedDay', (v) => { this.selectedDate = this.computeDateForDay(v); });
+                    this.$watch('selectedDay', (v) => { this.selectedDate = this.computeDateForDay(v); this.updateTimes(); });
                 },
                 updateTimes() {
                     const opt = $refs.userClass.selectedOptions[0];
                     const t1 = opt ? opt.dataset.time1 || '' : '';
                     const t2 = opt ? opt.dataset.time2 || '' : '';
                     const arr = [];
-                    if (t1) arr.push(t1);
-                    if (t2) arr.push(t2);
-                    this.times = arr;
-                    if (!this.times.includes(this.selectedTime)) {
-                        this.selectedTime = '';
+                    if (t1) arr.push({ value: t1, full: false });
+                    if (t2) arr.push({ value: t2, full: false });
+                    const cls = $refs.userClass.value;
+                    const date = this.selectedDate;
+                    if (cls && date) {
+                        fetch(`{{ route('booking.availability') }}?class_id=${encodeURIComponent(cls)}&date=${encodeURIComponent(date)}`, {
+                            headers: { 'Accept': 'application/json' }
+                        }).then(r => r.json()).then(data => {
+                            if (data && Array.isArray(data.times)) {
+                                this.times = data.times;
+                                const found = this.times.find(t => t.value === this.selectedTime && !t.full);
+                                if (!found) this.selectedTime = '';
+                            } else {
+                                this.times = arr;
+                                if (!this.times.find(t => t.value === this.selectedTime)) this.selectedTime = '';
+                            }
+                        }).catch(() => {
+                            this.times = arr;
+                            if (!this.times.find(t => t.value === this.selectedTime)) this.selectedTime = '';
+                        });
+                    } else {
+                        this.times = arr;
+                        if (!this.times.find(t => t.value === this.selectedTime)) this.selectedTime = '';
                     }
                 },
                 updateDays() {
@@ -53,6 +71,7 @@
                         this.selectedDay = '';
                     }
                     this.selectedDate = this.computeDateForDay(this.selectedDay);
+                    this.updateTimes();
                 },
                 computeDateForDay(day) {
                     const map = { sunday:0, monday:1, tuesday:2, wednesday:3, thursday:4, friday:5, saturday:6 };
@@ -219,8 +238,8 @@
                         <select id="time" name="time" x-model="selectedTime" :disabled="times.length === 0" :class="{'opacity-60 cursor-not-allowed bg-gray-50': times.length === 0}"
                             class="w-full border border-gray-300 py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300" required>
                             <option value="">Select Time</option>
-                            <template x-for="t in times" :key="t">
-                                <option :value="t" x-text="t"></option>
+                            <template x-for="t in times" :key="t.value">
+                                <option :value="t.value" :disabled="t.full" x-text="t.value + (t.full ? ' (Full)' : '')"></option>
                             </template>
                         </select>
                     </div>

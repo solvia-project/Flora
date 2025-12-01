@@ -20,6 +20,7 @@ Route::get('/classes', [ClassController::class, 'index'])->name('classes.index')
 Route::get('/booking', [BookingController::class, 'index'])->name('booking.index');
 Route::post('/booking', [BookingController::class, 'store'])->middleware('auth')->name('booking.store');
 Route::post('/booking/pay', [BookingController::class, 'pay'])->middleware('auth')->name('booking.pay');
+Route::get('/booking/availability', [BookingController::class, 'availability'])->name('booking.availability');
 
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/booking', [AdminBookingController::class, 'index'])->name('admin.booking.index');

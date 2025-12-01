@@ -38,45 +38,50 @@ class ClassController extends Controller
                 continue;
             }
             $today = Carbon::now()->startOfDay();
-            $nextDate = null;
-            $nextDay = null;
-            for ($i = 0; $i < 7; $i++) {
-                $d = $today->copy()->addDays($i);
-                $name = strtolower($d->format('l'));
-                if (in_array($name, $allowedDays, true)) {
-                    $nextDate = $d;
-                    $nextDay = $name;
-                    break;
+            $groups = [];
+            foreach ($allowedDays as $dayName) {
+                $targetDate = null;
+                for ($i = 0; $i < 7; $i++) {
+                    $d = $today->copy()->addDays($i);
+                    if (strtolower($d->format('l')) === $dayName) {
+                        $targetDate = $d;
+                        break;
+                    }
                 }
-            }
-            if (!$nextDate) {
-                continue;
-            }
-            $timesInfo = [];
-            $dayFull = true;
-            foreach ($allowedTimes as $t) {
-                $count = Booking::where('class_id', $c->id)
-                    ->whereDate('booking_date', $nextDate->toDateString())
-                    ->whereTime('booking_date', $t)
-                    ->count();
-                $full = $c->max ? $count >= (int) $c->max : false;
-                if (!$full) {
-                    $dayFull = false;
+                if (!$targetDate) {
+                    continue;
                 }
-                $timesInfo[] = [
-                    'value' => $t,
-                    'count' => $count,
-                    'full' => $full,
+                $timesInfo = [];
+                $dayFull = true;
+                foreach ($allowedTimes as $t) {
+                    $count = Booking::where('class_id', $c->id)
+                        ->whereDate('booking_date', $targetDate->toDateString())
+                        ->whereTime('booking_date', $t)
+                        ->count();
+                    $full = $c->max ? $count >= (int) $c->max : false;
+                    if (!$full) {
+                        $dayFull = false;
+                    }
+                    $timesInfo[] = [
+                        'value' => $t,
+                        'count' => $count,
+                        'full' => $full,
+                    ];
+                }
+                $groups[] = [
+                    'day' => $dayName,
+                    'date' => $targetDate->toDateString(),
+                    'display_day' => ucfirst($dayName),
+                    'display_date' => $targetDate->format('l, d M Y'),
+                    'times' => $timesInfo,
+                    'day_full' => $dayFull,
                 ];
             }
-            $slotMap[$c->id] = [
-                'day' => $nextDay,
-                'date' => $nextDate->toDateString(),
-                'display_day' => ucfirst($nextDay),
-                'display_date' => $nextDate->format('l, d M Y'),
-                'times' => $timesInfo,
-                'day_full' => $dayFull,
-            ];
+            if ($groups) {
+                $slotMap[$c->id] = [
+                    'days' => $groups,
+                ];
+            }
         }
         return view('content.class', compact('classes', 'slotMap'));
     }
