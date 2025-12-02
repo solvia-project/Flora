@@ -36,27 +36,42 @@
                             <div class="flex justify-end">
                                 <img src="{{ asset('img/class/Star.png') }}" alt="">
                             </div>
-                            <div class="flex flex-col items-end">
+                            <div class="flex flex-col items-end space-y-2">
                                 <p>Duration : {{ $c->duration_minutes }} Hours</p>
-                                {{-- <p>Starts : {{ optional($c->starts_at)->format('l, d M Y H:i') }}</p> --}}
                                 <p>Location : {{ $c->location }}</p>
+
                                 @php $info = ($slotMap[$c->id] ?? null); @endphp
+
                                 @if($info && isset($info['days']))
+                                    <div class="grid grid-cols-3 gap-3 w-full">
                                 @foreach($info['days'] as $d)
-                                <p>Day : {{ $d['display_day'] }}@if($c->max && ($d['day_full'] ?? false)) (Full) @endif</p>
-                                <p>
-                                    @foreach(($d['times'] ?? []) as $t)
-                                    {{ $t['value'] }} : {{ $t['count'] }}/{{ $c->max ?? '-' }}@if($c->max && $t['full']) (Full) @endif
-                                    @endforeach
-                                </p>
+                                    <div class="border p-2 rounded bg-gray-50 text-right">
+                                        <div class="font-semibold">
+                                            {{ $d['display_day'] }}
+
+                                        </div>
+
+                                        <div class="flex flex-col items-end gap-1 mt-1">
+                                            @foreach(($d['times'] ?? []) as $t)
+                                                <div class="text-sm">
+                                                    {{ $t['value'] }} :
+                                                    {{ $t['count'] }}/{{ $c->max ?? '-' }}
+                                                    @if($c->max && $t['full'])
+                                                        <span class="text-red-500">(Full)</span>
+                                                    @endif
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    </div>
                                 @endforeach
+                            </div>
                                 @else
-                                <p>
-                                    Class Slot : {{ $c->bookings_count }}/{{ $c->max ?? '-' }}
-                                    @if($c->max && $c->bookings_count == $c->max)
-                                    (Full)
-                                    @endif
-                                </p>
+                                    <p>
+                                        Class Slot : {{ $c->bookings_count }}/{{ $c->max ?? '-' }}
+                                        @if($c->max && $c->bookings_count == $c->max)
+                                            (Full)
+                                        @endif
+                                    </p>
                                 @endif
                             </div>
                         </div>
