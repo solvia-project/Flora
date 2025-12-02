@@ -52,65 +52,68 @@
                         </div>
 
                         <!-- RIGHT DATA -->
-                        <div class="flex justify-between p-6 md:p-10 gap-4">
+<div class="flex p-6 md:p-10 gap-4">
 
-                            <!-- Left Icon -->
-                            <div class="hidden md:flex items-start">
-                                <img src="{{ asset('img/class/png.png') }}" alt="" class="w-16 h-16 object-contain">
+    <!-- Left Icon Full Height -->
+    <div class="hidden md:flex h-full items-stretch">
+        <img src="{{ asset('img/class/png.png') }}"
+             alt=""
+             class="h-full object-contain">
+    </div>
+
+    <!-- Right Info -->
+    <div class="flex flex-col justify-between w-full">
+
+        <div class="flex justify-end">
+            <img src="{{ asset('img/class/Star.png') }}" alt="" class="w-8 h-8 object-contain">
+        </div>
+
+        <div class="flex flex-col items-end space-y-2 text-sm sm:text-base">
+
+            <p>Duration : {{ $c->duration_minutes }} Hours</p>
+            <p>Location : {{ $c->location }}</p>
+
+            @php $info = ($slotMap[$c->id] ?? null); @endphp
+
+            @if($info && isset($info['days']))
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 w-full">
+
+                    @foreach($info['days'] as $d)
+                        <div class="border p-2 rounded bg-gray-50 text-right">
+                            <div class="font-semibold">
+                                {{ $d['display_day'] }}
                             </div>
 
-                            <!-- Right Info -->
-                            <div class="flex flex-col justify-between w-full">
-
-                                <div class="flex justify-end">
-                                    <img src="{{ asset('img/class/Star.png') }}" alt="" class="w-8 h-8 object-contain">
-                                </div>
-
-                                <div class="flex flex-col items-end space-y-2 text-sm sm:text-base">
-                                    <p>Duration : {{ $c->duration_minutes }} Hours</p>
-                                    <p>Location : {{ $c->location }}</p>
-
-                                    @php $info = ($slotMap[$c->id] ?? null); @endphp
-
-                                    <!-- DAYS RESPONSIVE GRID -->
-                                    @if($info && isset($info['days']))
-                                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 w-full">
-
-                                            @foreach($info['days'] as $d)
-                                                <div class="border p-2 rounded bg-gray-50 text-right">
-                                                    <div class="font-semibold">
-                                                        {{ $d['display_day'] }}
-                                                    </div>
-
-                                                    <div class="flex flex-col items-end gap-1 mt-1">
-                                                        @foreach(($d['times'] ?? []) as $t)
-                                                            <div class="text-sm">
-                                                                {{ $t['value'] }} :
-                                                                {{ $t['count'] }}/{{ $c->max ?? '-' }}
-                                                                @if($c->max && $t['full'])
-                                                                    <span class="text-red-500">(Full)</span>
-                                                                @endif
-                                                            </div>
-                                                        @endforeach
-                                                    </div>
-                                                </div>
-                                            @endforeach
-
-                                        </div>
-                                    @else
-                                        <p>
-                                            Class Slot : {{ $c->bookings_count }}/{{ $c->max ?? '-' }}
-                                            @if($c->max && $c->bookings_count == $c->max)
-                                                (Full)
-                                            @endif
-                                        </p>
-                                    @endif
-
-                                </div>
-
+                            <div class="flex flex-col items-end gap-1 mt-1">
+                                @foreach(($d['times'] ?? []) as $t)
+                                    <div class="text-sm">
+                                        {{ $t['value'] }} :
+                                        {{ $t['count'] }}/{{ $c->max ?? '-' }}
+                                        @if($c->max && $t['full'])
+                                            <span class="text-red-500">(Full)</span>
+                                        @endif
+                                    </div>
+                                @endforeach
                             </div>
-
                         </div>
+                    @endforeach
+
+                </div>
+            @else
+                <p>
+                    Class Slot : {{ $c->bookings_count }}/{{ $c->max ?? '-' }}
+                    @if($c->max && $c->bookings_count == $c->max)
+                        (Full)
+                    @endif
+                </p>
+            @endif
+
+        </div>
+
+    </div>
+
+</div>
+
 
                     </div>
                     <!-- END CARD -->
