@@ -76,29 +76,30 @@
             @php $info = ($slotMap[$c->id] ?? null); @endphp
 
             @if($info && isset($info['days']))
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 w-full">
+                <div dir="rtl" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 w-full">
 
-                    @foreach($info['days'] as $d)
-                        <div class="border p-2 rounded bg-gray-50 text-right">
-                            <div class="font-semibold">
-                                {{ $d['display_day'] }}
-                            </div>
+    @foreach($info['days'] as $d)
+        <div dir="ltr" class="border p-2 rounded bg-gray-50 text-right">
+            <div class="font-semibold">
+                {{ $d['display_day'] }}
+            </div>
 
-                            <div class="flex flex-col items-end gap-1 mt-1">
-                                @foreach(($d['times'] ?? []) as $t)
-                                    <div class="text-sm">
-                                        {{ $t['value'] }} :
-                                        {{ $t['count'] }}/{{ $c->max ?? '-' }}
-                                        @if($c->max && $t['full'])
-                                            <span class="text-red-500">(Full)</span>
-                                        @endif
-                                    </div>
-                                @endforeach
-                            </div>
-                        </div>
-                    @endforeach
+            <div class="flex flex-col items-end gap-1 mt-1">
+                @foreach(($d['times'] ?? []) as $t)
+                    <div class="text-sm">
+                        {{ $t['value'] }} :
+                        {{ $t['count'] }}/{{ $c->max ?? '-' }}
+                        @if($c->max && $t['full'])
+                            <span class="text-red-500">(Full)</span>
+                        @endif
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    @endforeach
 
-                </div>
+</div>
+
             @else
                 <p>
                     Class Slot : {{ $c->bookings_count }}/{{ $c->max ?? '-' }}
