@@ -31,31 +31,38 @@
                     name="name" type="text" value="{{ old('name') }}"
                     class="w-full border border-gray-300 py-2.5 px-3 rounded-lg
                            focus:outline-none focus:ring-2 focus:ring-pink-300"
-                    placeholder="Your Name" autocomplete="name">
+                    placeholder="Your Name">
 
                 <input
                     name="email" type="email" value="{{ old('email') }}"
                     class="w-full border border-gray-300 py-2.5 px-3 rounded-lg
                            focus:outline-none focus:ring-2 focus:ring-pink-300"
-                    placeholder="Your Email" autocomplete="username">
+                    placeholder="Your Email">
 
                 <input
                     name="phone" type="tel" value="{{ old('phone') }}"
                     class="w-full border border-gray-300 py-2.5 px-3 rounded-lg
                            focus:outline-none focus:ring-2 focus:ring-pink-300"
-                    placeholder="Your Phone" autocomplete="tel">
+                    placeholder="Your Phone">
 
-                <input
-                    name="password" type="password"
-                    class="w-full border border-gray-300 py-2.5 px-3 rounded-lg
-                           focus:outline-none focus:ring-2 focus:ring-pink-300"
-                    placeholder="Your Password" autocomplete="new-password">
+                {{-- Password --}}
+                <div>
+                    <input
+                        name="password" type="password"
+                        class="w-full border border-gray-300 py-2.5 px-3 rounded-lg
+                               focus:outline-none focus:ring-2 focus:ring-pink-300"
+                        placeholder="Your Password">
+
+                    @error('password')
+                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
 
                 <input
                     name="password_confirmation" type="password"
                     class="w-full border border-gray-300 py-2.5 px-3 rounded-lg
                            focus:outline-none focus:ring-2 focus:ring-pink-300"
-                    placeholder="Confirm Password" autocomplete="new-password">
+                    placeholder="Confirm Password">
 
                 <button
                     type="submit"
