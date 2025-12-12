@@ -3,46 +3,93 @@
         <x-navbar />
     </x-slot>
 
-    <section class="min-h-screen flex flex-col md:flex-row items-center bg-center bg-cover"
-             style="background-image: url('{{ asset('img/bg/register.png') }}');">
+    <section
+        class="min-h-screen flex flex-col md:flex-row items-center justify-center
+               bg-center bg-cover px-4 py-10 md:p-0"
+        style="background-image: url('{{ asset('img/bg/register.png') }}');"
+    >
 
-        <div class="hidden md:flex w-3/4"></div>
+        {{-- Left spacing for desktop --}}
+        <div class="hidden md:flex w-1/2"></div>
 
-        {{-- Kotak register kanan --}}
-        <div class="w-full md:w-1/2 flex flex-col bg-white bg-opacity-90 p-8 md:p-12 justify-center items-end md:mr-40">
+        {{-- Register Box --}}
+        <div class="w-full md:w-1/2 max-w-md bg-white bg-opacity-90
+                    rounded-xl shadow-lg md:mr-20 p-8 md:p-10">
 
-            <div class="flex flex-col md:w-3/4 text-left">
-                <h5 class="text-gray-600 font-['Syne'] text-xl sm:text-2xl md:text-3xl">
-                    Register
-                </h5>
-                <p class="mt-2 text-gray-700">
-                    Welcome to FloraLearn, we hope your stay with us feels as bright as the morning sun.
-                </p>
+            <h5 class="text-gray-700 font-['Syne'] text-2xl md:text-3xl">
+                Register
+            </h5>
+            <p class="mt-2 text-gray-600 text-sm md:text-base leading-relaxed">
+                Welcome to FloraLearn, we hope your stay with us feels as bright as the morning sun.
+            </p>
 
-                {{-- Form Input --}}
-                <form method="POST" action="{{ route('register') }}" class="flex flex-col gap-4 mt-6">
-                    @csrf
-                    <input name="name" type="text" value="{{ old('name') }}" class="w-full border border-gray-300 py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300" placeholder="Your Name" autocomplete="name">
-                    <input name="email" type="email" value="{{ old('email') }}" class="w-full border border-gray-300 py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300" placeholder="Your Email" autocomplete="username">
-                    <input name="phone" type="tel" value="{{ old('phone') }}" class="w-full border border-gray-300 py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300" placeholder="Your Phone" autocomplete="tel">
-                    <input name="password" type="password" class="w-full border border-gray-300 py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300" placeholder="Your Password" autocomplete="new-password">
-                    <input name="password_confirmation" type="password" class="w-full border border-gray-300 py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300" placeholder="Confirm Password" autocomplete="new-password">
-                    <div class="w-full mt-4 text-center ">
-                        <button name="register" type="submit" class="w-full bg-[#F8CDCD] text-black py-2 px-6 rounded text-sm sm:text-base hover:shadow-lg transition">
-                            Register
-                        </button>
-                    </div>
-                </form>
+            {{-- Form --}}
+            <form method="POST" action="{{ route('register') }}" class="flex flex-col gap-4 mt-6">
+                @csrf
 
-                {{-- Tombol Register --}}
-                <div class="w-full mt-2 text-center ">
-                    <a href="{{ route('login') }}" class="inline-block w-full mt-3 bg-white border border-gray-300 text-gray-700 py-2 px-6 rounded text-sm sm:text-base hover:shadow-lg transition text-center">
-                        Sign in
-                    </a>
-                    <p class="mt-4">Already have an account? <a href="{{ route('login') }}" class="underline">Login</a></p>
+                <input
+                    name="name" type="text" value="{{ old('name') }}"
+                    class="w-full border border-gray-300 py-2.5 px-3 rounded-lg
+                           focus:outline-none focus:ring-2 focus:ring-pink-300"
+                    placeholder="Your Name">
+
+                <input
+                    name="email" type="email" value="{{ old('email') }}"
+                    class="w-full border border-gray-300 py-2.5 px-3 rounded-lg
+                           focus:outline-none focus:ring-2 focus:ring-pink-300"
+                    placeholder="Your Email">
+
+                <input
+                    name="phone" type="tel" value="{{ old('phone') }}"
+                    class="w-full border border-gray-300 py-2.5 px-3 rounded-lg
+                           focus:outline-none focus:ring-2 focus:ring-pink-300"
+                    placeholder="Your Phone">
+
+                {{-- Password --}}
+                <div>
+                    <input
+                        name="password" type="password"
+                        class="w-full border border-gray-300 py-2.5 px-3 rounded-lg
+                               focus:outline-none focus:ring-2 focus:ring-pink-300"
+                        placeholder="Your Password">
+
+                    @error('password')
+                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
+
+                <input
+                    name="password_confirmation" type="password"
+                    class="w-full border border-gray-300 py-2.5 px-3 rounded-lg
+                           focus:outline-none focus:ring-2 focus:ring-pink-300"
+                    placeholder="Confirm Password">
+
+                <button
+                    type="submit"
+                    class="w-full bg-[#F8CDCD] text-black py-2.5 rounded-lg
+                           hover:shadow-lg transition text-sm md:text-base"
+                >
+                    Register
+                </button>
+            </form>
+
+            {{-- Bottom links --}}
+            <div class="w-full mt-5 text-center">
+                <a href="{{ route('login') }}"
+                   class="inline-block w-full bg-white border border-gray-300
+                          text-gray-700 py-2.5 rounded-lg hover:shadow transition text-sm md:text-base">
+                    Sign in
+                </a>
+
+                <p class="mt-4 text-sm">
+                    Already have an account?
+                    <a href="{{ route('login') }}" class="underline hover:text-gray-800">
+                        Login
+                    </a>
+                </p>
             </div>
 
         </div>
     </section>
+
 </x-app>

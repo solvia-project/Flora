@@ -8,6 +8,7 @@ use App\Http\Controllers\BookingController;
 use App\Http\Controllers\Admin\ClassController as AdminClassController;
 use App\Http\Controllers\Admin\BookingController as AdminBookingController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -20,8 +21,10 @@ Route::get('/classes', [ClassController::class, 'index'])->name('classes.index')
 Route::get('/booking', [BookingController::class, 'index'])->name('booking.index');
 Route::post('/booking', [BookingController::class, 'store'])->middleware('auth')->name('booking.store');
 Route::post('/booking/pay', [BookingController::class, 'pay'])->middleware('auth')->name('booking.pay');
+Route::get('/booking/availability', [BookingController::class, 'availability'])->name('booking.availability');
 
 Route::middleware(['auth', 'admin'])->group(function () {
+    Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
     Route::get('/admin/booking', [AdminBookingController::class, 'index'])->name('admin.booking.index');
     Route::get('/admin/user', [AdminUserController::class, 'index'])->name('admin.user.index');
     Route::get('/admin/class', [AdminClassController::class, 'index'])->name('admin.class.index');

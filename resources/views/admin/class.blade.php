@@ -60,6 +60,7 @@
                 <div class="card">
                   <div class="card-body p-0">
                     <ul class="list-group list-group-flush">
+                      <a href="{{ route('admin.dashboard') }}" class="list-group-item list-group-item-action {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">Dashboard</a>
                       <a href="{{ route('admin.booking.index') }}" class="list-group-item list-group-item-action {{ request()->routeIs('admin.booking.index') ? 'active' : '' }}">Booking</a>
                       <a href="{{ route('admin.user.index') }}" class="list-group-item list-group-item-action {{ request()->routeIs('admin.user.index') ? 'active' : '' }}">Users</a>
                       <a href="{{ route('admin.class.index') }}" class="list-group-item list-group-item-action {{ request()->routeIs('admin.class.index') ? 'active' : '' }}">Classes</a>
@@ -104,7 +105,27 @@
                             <td>{{ $c->max }}</td>
                             <td>Rp{{ number_format($c->price, 0, ',', '.') }}</td>
                             <td>{{ $c->location }}</td>
-                            <td>{{ optional($c->starts_at)->format('d-m-Y H:i') }}</td>
+                            @php
+                              $daysText = '';
+                              if (!empty($c->day)) {
+                                $value = (string) $c->day;
+                                if (ctype_digit($value)) {
+                                  $names = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+                                  $mask = (int) $value;
+                                  $arr = [];
+                                  foreach ($names as $i => $n) {
+                                    if ($mask & (1 << $i)) { $arr[] = $n; }
+                                  }
+                                  $daysText = implode(', ', $arr);
+                                } else {
+                                  $arr = array_values(array_filter(array_map(function ($d) {
+                                    return ucfirst(strtolower(trim((string) $d)));
+                                  }, explode(',', $value))));
+                                  $daysText = implode(', ', $arr);
+                                }
+                              }
+                            @endphp
+                            <td>{{ $daysText ?: '-' }}</td>
                             <td>{{ $c->duration_minutes }} Hours</td>
                             <td>{{ Str::limit($c->description, 120) }}</td>
                             <td>{{ $c->updated_at->format('d-m-Y H:i') }}</td>
