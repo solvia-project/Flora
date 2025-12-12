@@ -1,18 +1,14 @@
 <x-admin-app>
+
   <body>
-    <!-- Loader starts-->
     <div class="loader-wrapper">
       <div class="theme-loader">
         <div class="loader-p"></div>
       </div>
     </div>
-    <!-- Loader ends-->
-    <!-- page-wrapper Start-->
     <div class="page-wrapper" id="pageWrapper">
-      <!-- Page Header Start-->
       <div class="page-main-header">
         <div class="main-header-right row m-0">
-
           <div class="nav-right col pull-right right-menu p-0">
             <ul class="nav-menus">
               <li class="onhover-dropdown p-0">
@@ -26,27 +22,21 @@
           <div class="d-lg-none mobile-toggle pull-right w-auto"><i data-feather="more-horizontal"></i></div>
         </div>
       </div>
-      <!-- Page Header Ends                              -->
-      <!-- Page Body Start-->
       <div class="page-body-wrapper horizontal-menu">
-
-        <!-- Page Sidebar Ends-->
         <div class="page-body">
           <div class="container-fluid">
             <div class="page-header">
               <div class="row">
                 <div class="col-sm-6">
-                  <h3>Booking</h3>
+                  <h3>Dashboard</h3>
                   <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="index.html">Admin</a></li>
-                    <li class="breadcrumb-item">Booking</li>
+                    <li class="breadcrumb-item">Dashboard</li>
                   </ol>
                 </div>
-
               </div>
             </div>
           </div>
-          <!-- Container-fluid starts-->
           <div class="container-fluid">
             <div class="row">
               <div class="col-md-3 col-lg-2 mb-3">
@@ -61,47 +51,98 @@
                   </div>
                 </div>
               </div>
-              <!-- HTML (DOM) sourced data  Starts-->
               <div class="col-md-9 col-lg-10">
-                <div class="card">
-
-                  <div class="card-body">
-                    <div class="table-responsive">
-                      <table class="display" id="data-source-1" style="width:100%">
-                        <thead>
-                          <tr>
-                            <th>No</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Phone</th>
-                            <th>Class Name</th>
-                            <th>Date</th>
-                            <th>Created at</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                            @foreach(($bookings ?? []) as $b)
-                                <tr>
-                                    <td>{{ ($bookings->firstItem() ?? 1) + $loop->index }}</td>
-                                    <td>{{ $b->user->name ?? '-' }}</td>
-                                    <td>{{ $b->user->email ?? '-' }}</td>
-                                    <td>{{ $b->user->phone ?? '-' }}</td>
-                                    <td>{{ optional($b->class)->name }}</td>
-                                    <td>{{ optional($b->booking_date)->format('d-m-Y H:i') }}</td>
-                                    <td>{{ $b->created_at->format('d-m-Y H:i') }}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                      </table>
+                <div class="row">
+                  <div class="col-12 mb-4">
+                    <div class="card">
+                      <div class="card-header">
+                        <h5>Total Revenue</h5>
+                      </div>
+                      <div class="card-body">
+                        <div id="revenue-chart" style="width:100%;height:360px"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-12 mb-4">
+                    <div class="card">
+                      <div class="card-header">
+                        <h5>Top Classes by Transactions</h5>
+                      </div>
+                      <div class="card-body">
+                        <div id="top-classes-chart" style="width:100%;height:360px"></div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          <!-- Container-fluid Ends-->
         </div>
       </div>
     </div>
+    <script src="../assets/js/chart/apex-chart/apex-chart.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        var revenueOptions = {
+          chart: {
+            type: 'line',
+            height: 360,
+            toolbar: {
+              show: false
+            }
+          },
+          dataLabels: {
+            enabled: false
+          },
+          stroke: {
+            curve: 'smooth',
+            width: 3
+          },
+          series: [{
+            name: 'Revenue',
+            data: @json($revenueValues)
+          }],
+          xaxis: {
+            categories: @json($revenueLabels)
+          },
+          colors: [vihoAdminConfig.primary]
+        };
+        new ApexCharts(document.querySelector('#revenue-chart'), revenueOptions).render();
+
+        var topOptions = {
+          chart: {
+            type: 'bar',
+            height: 360,
+            toolbar: {
+              show: false
+            }
+          },
+          plotOptions: {
+            bar: {
+              horizontal: false,
+              columnWidth: '45%',
+              endingShape: 'rounded'
+            }
+          },
+          dataLabels: {
+            enabled: false
+          },
+          stroke: {
+            show: true,
+            width: 2,
+            colors: ['transparent']
+          },
+          series: [{
+            name: 'Transactions',
+            data: @json($topClassCounts)
+          }],
+          xaxis: {
+            categories: @json($topClassLabels)
+          },
+          colors: [vihoAdminConfig.secondary]
+        };
+        new ApexCharts(document.querySelector('#top-classes-chart'), topOptions).render();
+      });
+    </script>
   </body>
 </x-admin-app>
